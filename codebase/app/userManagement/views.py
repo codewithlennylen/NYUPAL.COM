@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, flash, redirect
+from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required
 from app.models import User
 from app import db
 
@@ -33,6 +35,7 @@ def login():
         if user:
             if check_password_hash(user.user_pword, login_pwd):
                 # flash("Login Successful.")
+                login_user(user,remember=login_remember)
                 return redirect(url_for('main_view.index'))
             else:
                 error = 'Login Failed. Please try again.'
@@ -114,3 +117,9 @@ def register():
 
 
     return render_template("userManagement/register.html")
+
+@auth_login_view.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main_view.index'))

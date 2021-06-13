@@ -24,6 +24,10 @@ def create_app():
     db.init_app(app) # links to the database
     migrate.init_app(app, db) # Enables Database-Migrations
 
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth_login_view.login'
+    login_manager.init_app(app)
+
 
     # Import and register Blueprints
     from .views import main_view
@@ -34,6 +38,14 @@ def create_app():
 
     # Make database accessible from app_context.
     from app import models
+
+    #user-loader -> Flask-login specific
+    from app.models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        # since the user_id is just the primary key of our user table, use it in the query for the user
+        return User.query.get(int(user_id))
 
 
     return app

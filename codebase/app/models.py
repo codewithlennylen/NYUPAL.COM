@@ -1,11 +1,12 @@
 from app import db
+from flask_login import UserMixin
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'user' # Explicit is better than implicit.
 
     # STUDENT INFORMATION   
-    user_id = db.Column(db.Integer, primary_key = True) # user's default id
+    id = db.Column(db.Integer, primary_key = True) # user's default id
     first_name = db.Column(db.String(50), nullable=False) # Lenny
     last_name = db.Column(db.String(50), nullable=False) # Ng'ang'a
     user_email = db.Column(db.String, nullable = False)

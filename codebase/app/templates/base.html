@@ -47,12 +47,27 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary" type="submit">Search</button>
           </form>
-
+          {% if current_user.is_authenticated %}
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item dropstart">
+              <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ current_user.first_name }} {{ current_user.last_name }}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">View Profile</a></li>
+                <!-- <li><a class="dropdown-item" href="#">Preferences</a></li> -->
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth_login_view.logout') }}">Logout</a></li>
+              </ul>
+            </li>           
+          </ul>
+          {% else %}
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{{ url_for('auth_login_view.login') }}">Login</a>
             </li>            
           </ul>
+          {% endif %}
         </div>
       </div>
     </nav>

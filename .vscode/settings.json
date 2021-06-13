@@ -4,5 +4,6 @@
         "Lang'ata",
         "Milimani",
         "Nyupal"
-    ]
+    ],
+    "python.pythonPath": "venv\\Scripts\\python.exe"
 }
