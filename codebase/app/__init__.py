@@ -2,16 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
-# from flask_mail import Mail
+from flask_mail import Mail
 
 db = SQLAlchemy()
 migrate = Migrate()
-
-
-# login_manager = LoginManager(app)
-# login_manager.login_view = 'login' # To make the login_required decorator work
-# login_manager.login_message_category = 'info'
+mail = Mail()
 
 # Define app object > Application Factory Pattern.
 def create_app():
@@ -23,6 +18,7 @@ def create_app():
     # initialize extensions
     db.init_app(app) # links to the database
     migrate.init_app(app, db) # Enables Database-Migrations
+    mail.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth_login_view.login'
