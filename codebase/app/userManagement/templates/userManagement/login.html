@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container">
+  <div class="card mt-3 mb-3" style="width: 30rem;">
+    <div class="card-header">
+      <h2>Login</h2>
+    </div>
+    <div class="card-body">
+      <form action="{{ url_for('login_view.login') }}" method="POST">
+        <div class="form-floating mb-3">
+          <input
+            type="email"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            name="loginEmail"
+          />
+          <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="password"
+            class="form-control"
+            id="floatingPassword"
+            placeholder="Password"
+            name="loginPassword"
+          />
+          <label for="floatingPassword">Password</label>
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1"
+          name="loginRemember" />
+          <label class="form-check-label" for="exampleCheck1"
+            >Remember Me</label
+          >
+        </div>
+        <button type="submit" class="btn btn-lg btn-primary">Login</button>
+      </form>
+    </div>
+    <div class="card-footer">
+      Or
+      <a href="{{ url_for('login_view.register') }}">Create an account</a>
+      instead.
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
