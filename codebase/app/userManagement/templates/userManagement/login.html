@@ -1,6 +1,21 @@
 {% extends "base.html" %} {% block content %}
 
+{# Flashed Messages #}
 <div class="container">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show mt-1" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
   <div class="card mt-3 mb-3" style="width: 30rem;">
     <div class="card-header">
       <h2>Login</h2>

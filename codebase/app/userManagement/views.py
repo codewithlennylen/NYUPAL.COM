@@ -15,9 +15,22 @@ def login():
         login_form = request.form
         login_email = login_form['loginEmail']
         login_pwd = login_form['loginPassword']
-        login_remember = login_form['loginRemember']
+        login_remember = request.form.get("loginRemember")
 
         user = User.query.filter_by(user_email=login_email).first()
+
+        if user:
+            if user.user_pword == login_pwd:
+                # flash("Login Successful.")
+                return redirect(url_for('main_view.index'))
+            else:
+                error = 'Login Failed. Please try again.'
+        else:
+            error= 'Login Failed. Do you have an account?'
+
+        if error:
+            flash(f"{error}")
+            return redirect(url_for('login_view.login'))
 
     return render_template("userManagement/login.html")
 
@@ -31,11 +44,14 @@ def register():
         register_email = register_form['registerEmail']
         register_pwd = register_form['registerPassword']
         register_confirmPwd = register_form['registerConfirmPassword']
-        register_updates = register_form['registerUpdates']
+        register_updates = request.form.get("registerUpdates")
+
+        #* INPUT VALIDATION
 
         #* USER VALIDATION
+        error=""
         # Ensure email is unique
-        emailsInDB = User.query.query.filter_by(user_email=register_email).first()
+        emailsInDB = User.query.filter_by(user_email=register_email).first()
         if emailsInDB:
             error = "This Account Already Exists. Log in instead."
 
@@ -46,7 +62,7 @@ def register():
         #* Edgecase-Failed: Redirect to register page for user to try again
         if error:
             flash(
-                f"Registration Failed:  {error}")
+                f"{error}")
             return redirect(url_for('login_view.register'))
 
         # Newsletter Subscriptions?
