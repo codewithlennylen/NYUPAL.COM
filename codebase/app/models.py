@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     user_pword = db.Column(db.String, nullable = False)
     # Optional > Builds the User's Profile
     user_updates = db.Column(db.Integer, nullable = True) # newsletter subscriptions
-    user_pic = db.Column(db.String, nullable = True) # image dir
+    user_pic = db.Column(db.String, nullable = True, default='default.png') # image dir
     user_phone = db.Column(db.String, nullable = True) # phone number > OTP?
 
     def get_reset_token(self, expires_sec=1800):
