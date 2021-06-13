@@ -1,14 +1,14 @@
 {% extends "base.html" %} {% block content %}
 
-{# Flashed Messages #}
 <div class="container">
+{# Flashed Messages #}
 {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-success alert-dismissible fade show mt-1" role="alert">
+        <div class="alert alert-info alert-dismissible fade show mt-1" role="alert">
         <strong>{{ message }}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true"></span>
         </button>
         </div>
     {% endfor %}
