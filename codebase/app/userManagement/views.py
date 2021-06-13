@@ -17,8 +17,18 @@ def login():
         login_pwd = login_form['loginPassword']
         login_remember = request.form.get("loginRemember")
 
+        #* INPUT VALIDATION
+        error=""
+        if login_email == "" or login_pwd == "":
+            error="Please fill in all the fields."
+            flash(
+                f"{error}")
+            return redirect(url_for('login_view.login'))
+
+
         user = User.query.filter_by(user_email=login_email).first()
 
+        # Check if user (email) exists
         if user:
             if user.user_pword == login_pwd:
                 # flash("Login Successful.")
@@ -47,9 +57,15 @@ def register():
         register_updates = request.form.get("registerUpdates")
 
         #* INPUT VALIDATION
+        error=""
+        if register_fname == "" or register_lname == "" or register_email == "" or register_pwd == "":
+            error="Please fill in all the fields."
+            flash(
+                f"{error}")
+            return redirect(url_for('login_view.register'))
 
         #* USER VALIDATION
-        error=""
+        
         # Ensure email is unique
         emailsInDB = User.query.filter_by(user_email=register_email).first()
         if emailsInDB:
