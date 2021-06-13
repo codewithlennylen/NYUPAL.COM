@@ -1,21 +1,22 @@
 from flask import Blueprint, render_template, url_for, request, flash, redirect
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import User
 from app import db
 
 
 # Create Blueprint
-login_view = Blueprint('login_view',
+auth_login_view = Blueprint('auth_login_view',
                             __name__,
                             static_folder='static',
                             template_folder='templates')
 
-@login_view.route('/login/', methods=['GET', 'POST'])
+@auth_login_view.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         login_form = request.form
         login_email = login_form['loginEmail']
         login_pwd = login_form['loginPassword']
-        login_remember = request.form.get("loginRemember")
+        login_remember = True if request.form.get("loginRemember") else False
 
         #* INPUT VALIDATION
         error=""
@@ -23,14 +24,14 @@ def login():
             error="Please fill in all the fields."
             flash(
                 f"{error}")
-            return redirect(url_for('login_view.login'))
+            return redirect(url_for('auth_login_view.login'))
 
 
         user = User.query.filter_by(user_email=login_email).first()
 
         # Check if user (email) exists
         if user:
-            if user.user_pword == login_pwd:
+            if check_password_hash(user.user_pword, login_pwd):
                 # flash("Login Successful.")
                 return redirect(url_for('main_view.index'))
             else:
@@ -40,12 +41,12 @@ def login():
 
         if error:
             flash(f"{error}")
-            return redirect(url_for('login_view.login'))
+            return redirect(url_for('auth_login_view.login'))
 
     return render_template("userManagement/login.html")
 
 
-@login_view.route('/register/', methods=['GET', 'POST'])
+@auth_login_view.route('/register/', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         register_form = request.form
@@ -54,7 +55,7 @@ def register():
         register_email = register_form['registerEmail']
         register_pwd = register_form['registerPassword']
         register_confirmPwd = register_form['registerConfirmPassword']
-        register_updates = request.form.get("registerUpdates")
+        register_updates = 1 if request.form.get("registerUpdates") else 0
 
         #* INPUT VALIDATION
         error=""
@@ -62,7 +63,7 @@ def register():
             error="Please fill in all the fields."
             flash(
                 f"{error}")
-            return redirect(url_for('login_view.register'))
+            return redirect(url_for('auth_login_view.register'))
 
         #* USER VALIDATION
         
@@ -79,17 +80,19 @@ def register():
         if error:
             flash(
                 f"{error}")
-            return redirect(url_for('login_view.register'))
+            return redirect(url_for('auth_login_view.register'))
 
         # Newsletter Subscriptions?
+        # unnecessary logic due to the one liner used above (register_updates)
         if register_updates:
-            register_updates = 1
+            pass
+            # register_updates = 1
         
         new_user = User(
             first_name=register_fname,
             last_name=register_lname,
             user_email=register_email,
-            user_pword=register_pwd,
+            user_pword=generate_password_hash(register_pwd,method='sha256'),
             user_updates=register_updates
         )
 
@@ -100,7 +103,7 @@ def register():
 
             flash(
                 f"Your Account was Successfully Created. Proceed to Login")
-            return redirect(url_for('login_view.login'))
+            return redirect(url_for('auth_login_view.login'))
         except Exception as e:
             # Log this SERIOUS issue > Report to Developer
             error = e

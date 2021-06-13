@@ -21,7 +21,7 @@
       <h2>Login</h2>
     </div>
     <div class="card-body">
-      <form action="{{ url_for('login_view.login') }}" method="POST">
+      <form action="{{ url_for('auth_login_view.login') }}" method="POST">
         <div class="form-floating mb-3">
           <input
             type="email"
@@ -54,7 +54,7 @@
     </div>
     <div class="card-footer">
       Or
-      <a href="{{ url_for('login_view.register') }}">Create an account</a>
+      <a href="{{ url_for('auth_login_view.register') }}">Create an account</a>
       instead.
     </div>
   </div>
