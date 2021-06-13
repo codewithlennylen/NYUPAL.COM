@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     user_email = db.Column(db.String, nullable = False)
     user_pword = db.Column(db.String, nullable = False)
     # Optional > Builds the User's Profile
-    user_updates = db.Column(db.Integer, nullable = True) # newsletter subscriptions
+    user_updates = db.Column(db.Integer, nullable = True, default=0) # newsletter subscriptions
     user_pic = db.Column(db.String, nullable = True, default='default.png') # image dir
     user_phone = db.Column(db.String, nullable = True) # phone number > OTP?
 

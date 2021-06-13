@@ -132,7 +132,7 @@ def logout():
     return redirect(url_for('main_view.index'))
 
 
-@auth_login_view.route('/profile/')
+@auth_login_view.route('/profile/', methods=['GET','POST'])
 @login_required
 def profile():
     return render_template("userManagement/profile.html")
