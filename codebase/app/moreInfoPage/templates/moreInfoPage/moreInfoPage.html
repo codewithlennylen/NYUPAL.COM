@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+
+  <h1>more info</h1>
+
+  <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3">
+    <div class="col">
+      <div class="card h-100 bg-light">
+        <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ url_for('static', filename='buildings/commercial/buildings/a.png') }}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='buildings/commercial/rooms/a.png') }}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='buildings/commercial/rooms/b.png') }}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='buildings/commercial/rooms/c.png') }}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='buildings/commercial/rooms/d.png') }}" class="d-block w-100" alt="...">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <div class="card-footer">
+          <h4>Check Out Our Rooms</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <!-- <div class="container-fluid"> -->
+        <div class="row">
+          <div class="col mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Amazon Plaza</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Property Description</h6>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus ducimus ratione praesentium voluptas impedit molestias amet deserunt nobis necessitatibus mollitia.</p>
+                <a href="#" class="card-link">Contact Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card text-center">
+              <div class="card-header">
+                Featured Content
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Relevant Ad</h5>
+                <p class="card-text">Ads can be placed here</p>
+                <a href="#" class="btn btn-primary">Mabati Rolling Mills</a>
+              </div>
+              <div class="card-footer text-muted">
+                www.mrm.com
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- </div> -->
+      
+    </div>
+
+    <div class="col">
+      <div class="card h-100">
+        <h5 class="card-header">Amazon Plaza</h5>
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <ul>
+            <li><b>Type:</b> Commercial</li>            
+            <li><b>Price Range:</b> 60-100K</li>
+            <li><b>Location:</b> Kilimani, Nairobi</li>
+            <li><b>Conference Rooms:</b> Available, 8-20pax</li>
+          </ul>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+        <!-- <div class="card-footer text-muted">
+          Contact Us for your specific needs
+        </div> -->
+      </div>
+    </div>
+  
+    <div class="col">
+      <div class="card text-center">
+        <div class="card-header">
+          Contact Property Owner
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">James Onyango</h5>
+          <p class="card-text">Manager, Radisson Properties Limited</p>
+          <a href="#" class="btn btn-primary">Contact Us</a>
+        </div>
+        <div class="card-footer text-muted">
+          For all your office needs.
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <a href="#viewMore" class="btn btn-outline-primary">Similar Property</a>
+    </div>
+  </div>
+
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='buildings/commercial/buildings/c.png') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h4 class="card-title">Annex Offices</h4>
+          <p class="card-text">Type: Commercial</p>
+          <p class="card-text">Price Range: 90-150K</p>
+          <p class="card-text">Location: Karen, Nairobi</p>
+        </div>
+        <div class="card-footer">
+          <div class="d-grid gap-2 mx-auto">
+                <button type="button" class="btn btn-primary">More Info</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='buildings/commercial/buildings/d.png') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h4 class="card-title">The Green House</h4>
+          <p class="card-text">Type: Commercial</p>
+          <p class="card-text">Price Range: 50-100K</p>
+          <p class="card-text">Location: Lang'ata, Nairobi</p>
+        </div>
+        <div class="card-footer">
+          <div class="d-grid gap-2 mx-auto">
+                <button type="button" class="btn btn-primary">More Info</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+          <img src="{{ url_for('static', filename='buildings/residential/buildings/a.png') }}" class="card-img-top" alt="...">
+          <div class="card-body">
+          <h4 class="card-title">Black Rose Offices</h4>
+          <p class="card-text">Type: Commercial</p>
+          <p class="card-text">Price Range: 80-120K</p>
+          <p class="card-text">Location: Kilimani, Nairobi</p>
+        </div>
+          <div class="card-footer">
+            <div class="d-grid gap-2 mx-auto">
+                <button type="button" class="btn btn-primary">More Info</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <a href="#viewMore" class="btn btn-outline-primary">View More Similar Property</a>
+    </div>
+  </div>
+
+
+
+</div>
+{% endblock content %}

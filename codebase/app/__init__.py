@@ -28,9 +28,11 @@ def create_app():
     # Import and register Blueprints
     from .views import main_view
     from .userManagement.views import auth_login_view
+    from .moreInfoPage.views import more_info_view
 
     app.register_blueprint(main_view)
     app.register_blueprint(auth_login_view, url_prefix="/user/")
+    app.register_blueprint(more_info_view, url_prefix="/more_info/")
 
     # Make database accessible from app_context.
     from app import models
