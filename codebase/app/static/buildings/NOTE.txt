@@ -1,0 +1,9 @@
+I plan to store images in the following directory structure:
+
+static:
+    property:
+        -Commercial
+        -land
+        -residential
+
+i.e. no further categories to distinguish rooms from buildings, etc

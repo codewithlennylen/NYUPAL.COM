@@ -53,6 +53,7 @@ class Property(db.Model):
     # I could use 2 variables (integer-columns), lower limit & upper limit to simplify filter by price
     property_price = db.Column(db.String(100), nullable=True) # To enable range 50-60K
     property_type = db.Column(db.String, nullable=True)
+    property_location = db.Column(db.String, nullable=True)
     #* I am thinking of adding land as a type / category
     # property_is_land = db.Column(db.String, nullable=True) 
     property_images = db.Column(db.String, nullable=True) # List of | separated img-dir names
