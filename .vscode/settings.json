@@ -5,7 +5,8 @@
         "Mabati",
         "Milimani",
         "Nyupal",
-        "Radisson"
+        "Radisson",
+        "propertys"
     ],
     "python.pythonPath": "venv\\Scripts\\python.exe"
 }
