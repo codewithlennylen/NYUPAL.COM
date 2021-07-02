@@ -18,10 +18,10 @@
 
   <div class="card mt-3 mb-3" style="width: 30rem">
     <div class="card-header">
-      <h2>Create an Account</h2>
+      <h2>Create a Business Account</h2>
     </div>
     <div class="card-body">
-      <form action="{{ url_for('auth_login_view.register') }}" method="POST">
+      <form action="{{ url_for('auth_login_view.register_business') }}" method="POST">
           <div class="row">
             <div class="col-6">
               <div class="form-floating mb-3">
@@ -30,7 +30,7 @@
                   class="form-control"
                   id="floatingInput"
                   placeholder="John"
-                  name="registerFirst"
+                  name="registerBusinessFirst"
                 />
                 <label for="floatingInput">First Name</label>
               </div>
@@ -42,12 +42,24 @@
                   class="form-control"
                   id="floatingInput"
                   placeholder="Smith"
-                  name="registerLast"
+                  name="registerBusinessLast"
                 />
                 <label for="floatingInput">Last Name</label>
               </div>
             </div>
           </div>
+
+        
+        <div class="form-floating mb-3">
+        <input
+            type="text"
+            class="form-control"
+            id="floatingInput"
+            placeholder="ABC Properties Limited"
+            name="registerBusinessName"
+        />
+        <label for="floatingInput">Business Name <small>(Optional)</small></label>
+        </div>
 
         <div class="form-floating mb-3">
           <input
@@ -55,7 +67,7 @@
             class="form-control"
             id="floatingInput"
             placeholder="name@example.com"
-            name="registerEmail"
+            name="registerBusinessEmail"
           />
           <label for="floatingInput">Email address</label>
         </div>
@@ -65,7 +77,7 @@
             class="form-control"
             id="floatingPassword"
             placeholder="Password"
-            name="registerPassword"
+            name="registerBusinessPassword"
           />
           <label for="floatingPassword">Password</label>
         </div>
@@ -75,7 +87,7 @@
             class="form-control"
             id="floatingPassword"
             placeholder="Password"
-            name="registerConfirmPassword"
+            name="registerBusinessConfirmPassword"
           />
           <label for="floatingPassword">Confirm Password</label>
         </div>
@@ -84,7 +96,7 @@
             type="checkbox"
             class="form-check-input"
             id="exampleCheck1"
-            name="registerUpdates"
+            name="registerBusinessUpdates"
           />
           <label class="form-check-label" for="exampleCheck1"
             >Receive Updates</label
@@ -93,7 +105,7 @@
 
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-lg btn-primary">
-            Create Account
+            Create Business Account
           </button>
           <a
             href="{{ url_for('auth_login_view.login') }}"
@@ -106,9 +118,9 @@
       </form>
     </div>
     <div class="card-footer">
-      Want to Sell your Property?
-      <a href="{{ url_for('auth_login_view.register_business') }}"
-        >Create a Business Account</a
+      Just Visiting?
+      <a href="{{ url_for('auth_login_view.register') }}"
+        >Create a Regular Account</a
       >
       Here.
     </div>

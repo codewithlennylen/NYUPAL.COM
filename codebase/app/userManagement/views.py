@@ -125,6 +125,84 @@ def register():
 
     return render_template("userManagement/register.html")
 
+@auth_login_view.route('/register_business/', methods=['GET', 'POST'])
+def register_business():
+    """Registers a business account. A business account can list and thus sell property
+    on the platform
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for('main_view.index'))
+
+    if request.method == 'POST':
+        register_form = request.form
+        register_fname = register_form['registerBusinessFirst']
+        register_lname = register_form['registerBusinessLast']
+        register_email = register_form['registerBusinessEmail']
+        register_pwd = register_form['registerBusinessPassword']
+        register_confirmPwd = register_form['registerBusinessConfirmPassword']
+        register_updates = 1 if request.form.get("registerBusinessUpdates") else 0
+
+        # This is the only difference between a regular user and a seller / property owner
+        businessAccount = 1 # Admin-ish feature
+        businessName = register_form['registerBusinessName']
+
+        #* INPUT VALIDATION
+        error=""
+        if register_fname == "" or register_lname == "" or register_email == "" or register_pwd == "":
+            error="Please fill in all the required fields."
+            flash(
+                f"{error}")
+            return redirect(url_for('auth_login_view.register'))
+
+        #* USER VALIDATION
+        
+        # Ensure email is unique
+        emailsInDB = User.query.filter_by(user_email=register_email).first()
+        if emailsInDB:
+            error = "This Account Already Exists. Log in instead."
+
+        # Ensure Passwords Match
+        if register_pwd != register_confirmPwd:
+            error = "The passwords do not match. Please Try Again."
+
+        #* Edgecase-Failed: Redirect to register page for user to try again
+        if error:
+            flash(
+                f"{error}")
+            return redirect(url_for('auth_login_view.register'))
+
+        # Newsletter Subscriptions?
+        # unnecessary logic due to the one liner used above (register_updates)
+        if register_updates:
+            pass
+            # register_updates = 1
+        
+        new_user = User(
+            first_name=register_fname,
+            last_name=register_lname,
+            user_email=register_email,
+            user_pword=generate_password_hash(register_pwd,method='sha256'),
+            user_updates=register_updates,
+            businessAccount = businessAccount,
+            businessName = businessName
+        )
+
+        try:
+            # Try adding user object to database.
+            db.session.add(new_user)
+            db.session.commit()
+
+            flash(
+                f"Your Account was Successfully Created. Proceed to Login")
+            return redirect(url_for('auth_login_view.login'))
+        except Exception as e:
+            # Log this SERIOUS issue > Report to Developer
+            error = e
+            print(error)
+
+    return render_template("userManagement/register_business.html")
+
+
 @auth_login_view.route('/logout/')
 @login_required
 def logout():

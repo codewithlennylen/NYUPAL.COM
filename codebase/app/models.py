@@ -17,6 +17,11 @@ class User(db.Model, UserMixin):
     user_updates = db.Column(db.Integer, nullable = True, default=0) # newsletter subscriptions
     user_pic = db.Column(db.String, nullable = True, default='default.png') # image dir
     user_phone = db.Column(db.String, nullable = True) # phone number > OTP?
+    
+    # Used to determine whether user can list property. > 'Admin' Emulation
+    businessAccount = db.Column(db.Integer, nullable = True, default=0)
+    # This will be displayed on the Contact Card on the more_info page of a property
+    businessName = db.Column(db.String(150), nullable = True) 
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.create_app().config['SECRET_KEY'], expires_sec)
