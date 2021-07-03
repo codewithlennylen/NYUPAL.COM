@@ -49,6 +49,7 @@
           </form>
           
           {% if current_user.is_authenticated %}
+          
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item dropstart">
               <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,7 +57,10 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="#">View Profile</a></li>
-                <!-- <li><a class="dropdown-item" href="#">Preferences</a></li> -->
+                {# Check if user is pseudo-admin #}
+                {% if current_user.businessAccount == 1 %}
+                  <li><a class="dropdown-item" href="{{ url_for('business_admin_view.property_dashboard') }}">View Property</a></li>
+                {% endif %}
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{{ url_for('auth_login_view.logout') }}">Logout</a></li>
               </ul>
@@ -68,6 +72,7 @@
               <a class="nav-link active" aria-current="page" href="{{ url_for('auth_login_view.login') }}">Login</a>
             </li>            
           </ul>
+          
           {% endif %}
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">

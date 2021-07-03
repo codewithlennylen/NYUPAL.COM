@@ -3,7 +3,7 @@ from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
-from app.models import User
+from app.models import User, Property
 from app import db, mail
 
 
@@ -19,45 +19,27 @@ business_admin_view = Blueprint('business_admin_view',
 @login_required
 def property_dashboard():
     # Check if user is admin!
-    if current_user.is_authenticated:
+    if current_user.businessAccount != 1:
         return redirect(url_for('main_view.index'))
+    
+    # list of properties listed / owned by the user.
+    propertys = current_user.property
+    # Get the images
+    propertyImages = []
+    for prop in propertys:
+        propImages = prop.property_images.split('|')
+        profilePic = propImages[0]
+        propertyImages.append(profilePic)
 
-    if request.method == 'POST':
-        login_form = request.form
-        login_email = login_form['loginEmail']
-        login_pwd = login_form['loginPassword']
-        login_remember = True if request.form.get("loginRemember") else False
+    print(propertyImages)
 
-        #* INPUT VALIDATION
-        error=""
-        if login_email == "" or login_pwd == "":
-            error="Please fill in all the fields."
-            flash(
-                f"{error}")
-            return redirect(url_for('business_admin_view.login'))
-
-
-        user = User.query.filter_by(user_email=login_email).first()
-
-        # Check if user (email) exists
-        if user:
-            if check_password_hash(user.user_pword, login_pwd):
-                # flash("Login Successful.")
-                login_user(user,remember=login_remember)
-                return redirect(url_for('main_view.index'))
-            else:
-                error = 'Login Failed. Please try again.'
-        else:
-            error= 'Login Failed. Do you have an account?'
-
-        if error:
-            flash(f"{error}")
-            return redirect(url_for('business_admin_view.login'))
-
-    return render_template("business/dashboard.html")
+    return render_template("business/dashboard.html",
+                           propertys=propertys,
+                           propertyImages=propertyImages)
 
 
 @business_admin_view.route('/add/', methods=['GET', 'POST'])
+@login_required
 def add_property():
     # Check if user is admin!
     if current_user.is_authenticated:
@@ -131,9 +113,9 @@ def add_property():
     return render_template("business/add.html")
 
 
-@business_admin_view.route('/view/', methods=['GET','POST'])
+@business_admin_view.route('/view/<property_id>', methods=['GET','POST'])
 @login_required
-def view_property():
+def view_property(property_id):
     # Check if user is admin!
     if current_user.is_authenticated:
         return redirect(url_for('main_view.index'))
