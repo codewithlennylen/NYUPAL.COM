@@ -13,6 +13,7 @@ more_info_view = Blueprint('more_info_view',
                             static_folder='static',
                             template_folder='templates')
 
+#! Should this route accept POST Requests?
 @more_info_view.route('/property/<property_id>', methods=['GET', 'POST'])
 def more_info(property_id):
     #! property_id should be randomCharacters -> Tom Scott

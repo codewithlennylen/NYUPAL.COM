@@ -4,6 +4,9 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 
 
+#! additionalContactInfo vs businessName
+
+
 class User(db.Model, UserMixin):
     __tablename__ = 'user' # Explicit is better than implicit.
 
