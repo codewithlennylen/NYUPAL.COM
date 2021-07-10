@@ -48,6 +48,7 @@ def add_property():
         return redirect(url_for('main_view.index'))
 
     propertyTypes = ["Residential", "Commercial", "Land"]
+    # This will be used to display and Ad on the Add-Property Page
     bannerAd = url_for('static', filename='icons/banner.jpg')
 
     if request.method == 'POST':
