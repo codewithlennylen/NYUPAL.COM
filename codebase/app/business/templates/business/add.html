@@ -1,93 +1,310 @@
 {% extends "base.html" %} {% block content %}
 
-<div class="container">
-{# Flashed Messages #}
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-info alert-dismissible fade show mt-1" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true"></span>
-        </button>
-        </div>
-    {% endfor %}
-    {% endif %}
-{% endwith %}
+<div class="container-fluid">
+  <form
+    action="{{ url_for('business_admin_view.add_property') }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
 
+      <!-- Upload Instructions -->
+      <div class="col">
+        <div class="card h-100">
+          <center><h5 class="card-header">List Your Property in 4 Easy Steps</h5></center>
+          <div class="card-body">
+            <ol>
+              <li>Start by Providing Essential Details about Your Property.</li>
+              <li>Ensure to upload appealing images.</li>
+              <li>Set up contact information, so that people can reach you.</li>
+              <li>Get Verified to reach as many people as possible.</li>
+            </ol>
+            <div class="mb-3 row">
+              <!-- Put Ad (banner) or something here -->
+              <!-- <img src="{{ bannerAd }}" class="img-fluid" style="max-height: 10%;" alt="Advertisement"> -->
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="card mt-3 mb-3" style="width: 30rem;">
-    <div class="card-header">
-      <h2>Create an Account</h2>
-    </div>
-    <div class="card-body">
-      <form action="{{ url_for('auth_login_view.register') }}" method="POST">
-        <div class="form-floating mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="floatingInput"
-              placeholder="John"
-              name="registerFirst"
-            />
-            <label for="floatingInput">First Name</label>
+      <!-- Property Info -->
+      <div class="col">
+        <div class="card h-100">
+          <center><h5 class="card-header">Property Info</h5></center>
+          <div class="card-body">
+            <!-- <h5 class="card-title">Details</h5> -->
+
+            <div class="mb-3 row">
+              <label for="inputPropertyName" class="col-md-3 col-form-label"
+                >Property Name:
+              </label>
+              <div class="col-md-9">
+                <input
+                  type="text"
+                  placeholder="ABC Residential Court"
+                  class="form-control"
+                  id="inputPropertyName"
+                  name="newPropertyName"
+                />
+              </div>
+            </div>
+            <!-- <div class="mb-3 row"> -->
+              <h6 class="card-subtitle mb-2 text-muted">
+                Property Description
+              </h6>
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="5"
+                name="newPropertyDescription"
+              >
+                
+              </textarea>
+            <!-- </div> -->
+            <div class="mb-3 row">
+            <center>
+              <h4>
+                <!-- Button trigger modal -->
+                <button
+                  type="button"
+                  class="btn mt-3 btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#staticBackdropAddPropertyImage"
+                >
+                  Upload Property Images
+                </button>
+              </h4>
+            </center>
+            </div>
           </div>
-          <div class="form-floating mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="floatingInput"
-              placeholder="Smith"
-              name="registerLast"
-            />
-            <label for="floatingInput">Last Name</label>
+        </div>
+      </div>
+
+      <!-- Property Details -->
+      <div class="col">
+        <div class="card h-100">
+          <center><h5 class="card-header">Add Property Details</h5></center>
+          <div class="card-body">
+            <!-- <h5 class="card-title">Details</h5> -->
+            <ul>
+              <div class="mb-3 row">
+                <label for="inputPropertyType" class="col-md-3 col-form-label"
+                  >Property Type:
+                </label>
+                <div class="col-md-9">
+                  <select
+                    class="form-select"
+                    id="inputPropertyType"
+                    aria-label="Default select example"
+                    name="newPropertyType"
+                  >
+                    <option selected>Select From Below</option>
+                    {% for p in propertyTypes %}
+                      <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="inputPriceRange" class="col-md-3 col-form-label"
+                  >Price Range (KES):
+                </label>
+                <div class="col-md-9">
+                  <input
+                    type="text"
+                    placeholder="50,000 - 120,000"
+                    class="form-control"
+                    id="inputPriceRange"
+                    name="newPriceRange"
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label
+                  for="inputPropertyLocation"
+                  class="col-md-3 col-form-label"
+                  >Location:
+                </label>
+                <div class="col-md-9">
+                  <input
+                    type="text"
+                    placeholder="Karen, Nairobi"
+                    class="form-control"
+                    id="inputPropertyLocation"
+                    name="newPropertyLocation"
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="inputPropertyMisc" class="col-md-3 col-form-label"
+                  >Others(Comma separated):
+                </label>
+                <div class="col-md-9">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="e.g. Swimming Pool, DSQ, etc (Optional)"
+                    id="inputPropertyMisc"
+                    name="newPropertyMisc"
+                  />
+                </div>
+              </div>
+
+            </ul>
           </div>
-        <div class="form-floating mb-3">
-          <input
-            type="email"
-            class="form-control"
-            id="floatingInput"
-            placeholder="name@example.com"
-            name="registerEmail"
-          />
-          <label for="floatingInput">Email address</label>
         </div>
-        <div class="form-floating mb-3">
-          <input
-            type="password"
-            class="form-control"
-            id="floatingPassword"
-            placeholder="Password"
-            name="registerPassword"
-          />
-          <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input
-              type="password"
-              class="form-control"
-              id="floatingPassword"
-              placeholder="Password"
-              name="registerConfirmPassword"
-            />
-            <label for="floatingPassword">Confirm Password</label>
+      </div>
+
+      <!-- Contact Details -->
+      <div class="col">
+        <div class="card h-100 text-center">
+          <h5 class="card-header">Edit Contact Details</h5>
+          <div class="card-body">
+            <div class="mb-3 row">
+              <label for="inputContactName" class="col-md-3 col-form-label"
+                >Your Name:
+              </label>
+              <div class="col-md-9">
+                <input
+                  type="text"
+                  value="{{ current_user.first_name }} {{ current_user.last_name }}"
+                  class="form-control"
+                  id="inputContactName"
+                  name="newContactName"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label for="inputPhoneNumber" class="col-md-3 col-form-label"
+                >Phone Number:
+              </label>
+              <div class="col-md-9">
+                <input
+                  type="text"
+                  value="{{ current_user.user_phone }}"
+                  class="form-control"
+                  id="inputPhoneNumber"
+                  name="newPhoneNumber"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label for="inputBusinessName" class="col-md-3 col-form-label"
+                >Business Info:
+              </label>
+              <div class="col-md-9">
+                <input
+                  type="text"
+                  placeholder="ABC Properties Limited (Optional)"
+                  class="form-control"
+                  id="inputBusinessName"
+                  name="newBusinessName"
+                />
+              </div>
+            </div>
           </div>
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1"
-          name="registerUpdates" />
-          <label class="form-check-label" for="exampleCheck1"
-            >Receive Updates</label
-          >
         </div>
-        <button type="submit" class="btn btn-lg btn-primary">Register</button>
-      </form>
+      </div>
     </div>
-    <div class="card-footer">
-      Or
-      <a href="{{ url_for('auth_login_view.login') }}">Sign In</a>
-      instead.
+
+    <!--  Property-Images Modal -->
+    <div
+      class="modal fade"
+      id="staticBackdropAddPropertyImage"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropAddPropertyImageLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropAddPropertyImageLabel">
+              Upload Property Images
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <b><p>The First Two Images are Required.</p></b>
+            <div class="mb-3">
+              <label for="formFile" class="form-label"
+                >Main Image (Select One Image)*</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFile"
+                name="addPropertyProfilePic"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="formFileMultiple1" class="form-label"
+                >Secondary Image 1 (e.g. A Room, Swimming Pool,...)*</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple1"
+                name="addPropertySecondaryImage1"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="formFileMultiple2" class="form-label"
+                >Secondary Image 2 (Optional)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple2"
+                name="addPropertySecondaryImage2"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="formFileMultiple3" class="form-label"
+                >Secondary Image 3 (Optional)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple3"
+                name="addPropertySecondaryImage3"
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              data-bs-dismiss="modal"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- Submit Button -->
+    <div class="d-grid mt-3 mb-5">
+      <button type="submit" class="btn btn-lg btn-success">Click to Submit</button>
+    </div>
+  </form>
 </div>
 
 {% endblock content %}
