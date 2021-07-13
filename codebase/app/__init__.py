@@ -30,11 +30,13 @@ def create_app():
     from .userManagement.views import auth_login_view
     from .moreInfoPage.views import more_info_view
     from .business.views import business_admin_view
+    from .finance.views import finance_view
 
     app.register_blueprint(main_view)
     app.register_blueprint(auth_login_view, url_prefix="/user/")
     app.register_blueprint(more_info_view, url_prefix="/more_info/")
     app.register_blueprint(business_admin_view, url_prefix="/property_page/")
+    app.register_blueprint(finance_view, url_prefix="/upgrade_account/")
 
     # Make database accessible from app_context.
     from app import models
