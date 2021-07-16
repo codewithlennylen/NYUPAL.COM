@@ -23,6 +23,7 @@ class User(db.Model, UserMixin):
     
     # Used to determine whether user can list property. > 'Admin' Emulation
     businessAccount = db.Column(db.Integer, nullable = True, default=0)
+    businessPlan = db.Column(db.Integer, db.ForeignKey('plans.id') ,nullable=True)
     # This will be displayed on the Contact Card on the more_info page of a property
     businessName = db.Column(db.String(150), nullable = True) 
 
@@ -74,3 +75,22 @@ class Property(db.Model):
     property_owner = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
     # Additional Contact Information.
     additionalContactInfo = db.Column(db.String, nullable=True) # e.g. Manager, ABC Property Limited
+
+
+# Plans entail the various pricing models available
+class Plans(db.Model):
+    __tablename__ = 'plans' # Explicit is better than implicit.
+
+    # STUDENT INFORMATION   
+    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
+    plan_name = db.Column(db.String(100), nullable=False)
+    plan_price = db.Column(db.String(100), nullable=False)
+ 
+    # RELATIONSHIPS
+    # accounts / users tied to a particular plan.
+    accounts = db.relationship(
+        'User',
+        foreign_keys = 'User.businessPlan',
+        backref = 'businessOwner',
+        lazy = True
+    )

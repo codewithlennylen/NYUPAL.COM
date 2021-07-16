@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from werkzeug.utils import secure_filename
-from app.models import User, Property
+from app.models import User, Property, Plans
 from app import db, mail, create_app
 import time
 import os
@@ -28,30 +28,39 @@ def pricing():
     return render_template("finance/pricing_details.html")
 
 
-@finance_view.route('/checkout/', methods=['GET', 'POST'])
+@finance_view.route('/checkout/<plan>', methods=['GET', 'POST'])
 @login_required
-def checkout():
+def checkout(plan):
+    print(plan)
     # Check if user is admin!
     # if current_user.businessAccount != 1:
     #     return redirect(url_for('main_view.index'))
 
-    # propertyTypes = ["Residential", "Commercial", "Land"]
-    # # This will be used to display and Ad on the Add-Property Page
-    # bannerAd = url_for('static', filename='icons/banner.jpg')
+    if plan == "standard":
+        planDetails = Plans.query.filter_by(plan_name="Standard Business Account").first()
+    elif plan == "verified":
+        planDetails = Plans.query.filter_by(plan_name="Verified Business Account").first()
+    elif plan == "premium":
+        planDetails = Plans.query.filter_by(plan_name="Premium Business Account").first()
+    else:
+        # Invalid URL
+        return redirect(url_for('finance_view.pricing'))
 
-    # if request.method == 'POST':
-    #     registerProperty_form = request.form
-    #     newPropertyName = registerProperty_form['newPropertyName']
+
+
+    if request.method == 'POST':
+        transactionForm = request.form
+        transactionCode = transactionForm['transactionCode']
         
-    #     # * INPUT VALIDATION
-    #     error = ""
-    #     if newPropertyName == "" or newPropertyDescription == "" or newPropertyType not in propertyTypes or newPriceRange == "" or newPropertyLocation == "" or newContactName == "" or newPhoneNumber == "":
-    #         error = "Please fill in all the Required Fields."
-    #         flash(
-    #             f"{error}")
-    #         return redirect(url_for('finance_view.add_property'))
+        # * INPUT VALIDATION
+        error = ""
+        if transactionCode == "" :
+            error = "Please Enter the Transaction Code."
+            flash(
+                f"{error}")
+            return redirect(url_for('finance_view.checkout', plan=plan))
 
-
+        #! Verify & Record Transaction 
     #     new_property = Property(
     #         property_name=newPropertyName,
     #     )
@@ -62,13 +71,17 @@ def checkout():
     #         # Try adding property object to database.
     #         db.session.add(new_property)
     #         db.session.commit()
+        #? Upgrade Account to Business, tier == plan
+        user = User.query.filter_by(id=current_user.id).first()
+        user.businessAccount = 1
+        user.businessPlan = planDetails.id
+        db.session.commit()
 
-    #         flash(
-    #             f"Your Property was Successfully Listed.")
-    #         return redirect(url_for('finance_view.property_dashboard'))
-    #     except Exception as e:
-    #         # Log this SERIOUS issue > Report to Developer
-    #         error = e
-    #         print(error)
+        #? Redirect to View-Property Page.
+        flash("Congratulations! Your Account has been Upgraded.")
+        flash("You can Manage Your property in this Dashboard made Just for You.")
+        return redirect(url_for('business_admin_view.property_dashboard'))
 
-    return render_template("business/checkout.html")
+
+    return render_template("finance/checkout.html",
+                            planDetails=planDetails)
