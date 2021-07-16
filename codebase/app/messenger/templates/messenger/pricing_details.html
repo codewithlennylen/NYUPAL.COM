@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <h1 class="text-primary">Pricing Plan</h1>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">KES 500<i class="text-muted">/month</i></h2>
+          <h4 class="card-text my-4">
+            <b> Standard Business Account </b>
+          </h4>
+
+          <hr />
+
+          <ul>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> List Your Property</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Free Admin Panel</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Customer Care Support</li>
+            <li style="list-style: none;"><i class="bi bi-x-lg text-danger"></i> <s class="text-muted">Get A Verified Badge</s></li>
+            <li style="list-style: none;"><i class="bi bi-x-lg text-danger"></i> <s class="text-muted">Property is Promoted</s></li>
+          </ul>
+
+          <div class="card-footer d-grid bg-white">
+            <a href="{{ url_for('finance_view.checkout', plan='standard') }}" class="mt-2  btn btn-lg btn-outline-primary">Get Standard Plan</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">KES 1500<i class="text-muted">/month</i></h2>
+          <h4 class="card-text my-4">
+            <b> Verified Business Account </b>
+          </h4>
+
+          <hr />
+
+          <ul>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> List Your Property</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Free Admin Panel</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Customer Care Support</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Get A Verified Badge alongside our Property</li>
+            <li style="list-style: none;"><i class="bi bi-x-lg text-danger"></i> <s class="text-muted">Property is Promoted</s></li>
+          </ul> 
+
+          <div class="card-footer d-grid bg-white">
+            <a href="{{ url_for('finance_view.checkout', plan='verified') }}" class="mt-2  btn btn-lg btn-outline-primary">Get Verified Plan</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title">KES 3000<i class="text-muted">/month</i></h2>
+          <h4 class="card-text my-4">
+            <b> Premium Business Account </b>
+          </h4>
+
+          <hr />
+
+          <ul>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> List Your Property</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Free Admin Panel</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Customer Care Support</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Get A Verified Badge alongside our Property</li>
+            <li style="list-style: none;"><i class="bi bi-check-lg text-success"></i> Your Property Gets Featured Frequently</li>
+          </ul>
+
+          <div class="card-footer d-grid bg-white">
+            <a href="{{ url_for('finance_view.checkout', plan='premium') }}" class="mt-2  btn btn-lg btn-outline-primary">Get Premium Plan</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <h1 class="text-primary">Payment Info</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <center>
+    <div class="card text-center h-100 shadow-sm mb-3" style="width: 28rem;">
+      <!-- <div class="card-header">
+        Featured
+      </div> -->
+      <div class="card-body">
+        <h2 class="card-title">KES {{ planDetails.plan_price }}<i class="text-muted">/month</i></h2>
+        <h4 class="card-text my-4">
+          <b> {{ planDetails.plan_name }} </b>
+        </h4>
+
+        <hr />
+
+        <!-- !When implementing multi-option payment methods, I could use pills/tabs -->
+        <h5 class="card-title">Complete Payment Below</h5>
+        <p class="card-text">Go to Mpesa Menu</p>
+        <p class="card-text">Select Lipa na Mpesa > Buy Goods and Services</p>
+        <p class="card-text">Enter till number: 12345</p>
+        <p class="card-text">Enter Transaction Code Below and Click Confirm</p>
+        <form action="#" method="post">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" name="transactionCode" placeholder="PXH1232OA32">
+            <label for="floatingInput">Mpesa Transaction Code</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted">
+        &copy;Nyupal 2021
+      </div>
+    </div>
+  </center>
+  </div>
+
+</div>
+
+{% endblock content %}
