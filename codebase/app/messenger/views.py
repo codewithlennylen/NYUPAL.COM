@@ -11,77 +11,50 @@ import os
 import secrets
 
 # Create Blueprint
-finance_view = Blueprint('finance_view',
+messenger_view = Blueprint('messenger_view',
                                 __name__,
                                 static_folder='static',
                                 template_folder='templates')
 
 
-@finance_view.route('/pricing/', methods=['GET', 'POST'])
-# EdgeCase: A regular user wants to checkout the prices for curiosity purposes?
-#// @login_required
-def pricing():
-    # Check if user is admin! -> Not necessary. Pricing is free for the public.
-    #// if current_user.businessAccount != 1:
-    #//     return redirect(url_for('main_view.index'))
+def send_email(owner,message):
+    msg = Message('Nyupal Message Alert',  # Title for the E-mail
+					sender=f'{current_user.user_email}',
+					recipients=[owner.user_email])
+    msg.body = f'''You have a new Message from a Prospective Client:
 
-    return render_template("finance/pricing_details.html")
+{message}
+
+Nyupal 2021
+'''
+
+    mail.send(msg)
+    print("email sent")
 
 
-@finance_view.route('/checkout/<plan>', methods=['GET', 'POST'])
+@messenger_view.route('/send_message/<propertyId>', methods=['POST'])
 @login_required
-def checkout(plan):
-    print(plan)
-    # Check if user is admin!
-    # if current_user.businessAccount != 1:
-    #     return redirect(url_for('main_view.index'))
+def send_message(propertyId):
 
-    if plan == "standard":
-        planDetails = Plans.query.filter_by(plan_name="Standard Business Account").first()
-    elif plan == "verified":
-        planDetails = Plans.query.filter_by(plan_name="Verified Business Account").first()
-    elif plan == "premium":
-        planDetails = Plans.query.filter_by(plan_name="Premium Business Account").first()
-    else:
-        # Invalid URL
-        return redirect(url_for('finance_view.pricing'))
+    # Get message from form
+    messageForm = request.form
+    message = messageForm['msgText'].strip()
 
-
-
-    if request.method == 'POST':
-        transactionForm = request.form
-        transactionCode = transactionForm['transactionCode']
+    # Input Validation
+    error=""
+    if len(message) == 0:
+        error = "You Cannot Send a Blank Email Message!"
         
-        # * INPUT VALIDATION
-        error = ""
-        if transactionCode == "" :
-            error = "Please Enter the Transaction Code."
-            flash(
-                f"{error}")
-            return redirect(url_for('finance_view.checkout', plan=plan))
+    # Get necessary info from DB
+    property = Property.query.filter_by(id=int(propertyId)).first()
+    owner = User.query.filter_by(id=property.property_owner).first()
 
-        #! Verify & Record Transaction 
-    #     new_property = Property(
-    #         property_name=newPropertyName,
-    #     )
+    if error:
+        flash(error)
+        return redirect(url_for('more_info_view.more_info',property_id=propertyId))
+    
+    # Send Message
+    send_email(owner,message)
+    flash("Message Sent Successfully")
+    return redirect(url_for('more_info_view.more_info',property_id=propertyId))
 
-    #     print(new_property.property_name,new_property.property_price,new_property.property_images,new_property.property_owner,)
-        
-    #     try:
-    #         # Try adding property object to database.
-    #         db.session.add(new_property)
-    #         db.session.commit()
-        #? Upgrade Account to Business, tier == plan
-        user = User.query.filter_by(id=current_user.id).first()
-        user.businessAccount = 1
-        user.businessPlan = planDetails.id
-        db.session.commit()
-
-        #? Redirect to View-Property Page.
-        flash("Congratulations! Your Account has been Upgraded.")
-        flash("You can Manage Your property in this Dashboard made Just for You.")
-        return redirect(url_for('business_admin_view.property_dashboard'))
-
-
-    return render_template("finance/checkout.html",
-                            planDetails=planDetails)

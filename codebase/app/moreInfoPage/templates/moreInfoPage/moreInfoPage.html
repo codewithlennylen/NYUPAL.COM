@@ -1,16 +1,24 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container-fluid">
-
-
-
   <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
     <div class="col">
       <div class="card h-100 bg-light">
-        <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div
+          id="carouselExampleIndicators"
+          class="carousel carousel-dark slide"
+          data-bs-ride="carousel"
+        >
           <div class="carousel-indicators">
             {% for image in propertyImages %}
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ loop.index0 }}" class="{{ 'active' if loop.index0 == 0 else 'not-active' }}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to="{{ loop.index0 }}"
+              class="{{ 'active' if loop.index0 == 0 else 'not-active' }}"
+              aria-current="true"
+              aria-label="Slide {{ loop.index }}"
+            ></button>
             {% endfor %}
             <!-- <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -21,16 +29,32 @@
           {# for img in property.images .split('|') #}
           <div class="carousel-inner">
             {% for image in propertyImages %}
-            <div class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}">
-              <img src="{{ url_for('static', filename=image) }}" class="d-block w-100" alt="...">
+            <div
+              class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}"
+            >
+              <img
+                src="{{ url_for('static', filename=image) }}"
+                class="d-block w-100"
+                alt="..."
+              />
             </div>
             {% endfor %}
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev"
+          >
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next"
+          >
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
@@ -43,37 +67,41 @@
 
     <div class="col">
       <!-- <div class="container-fluid"> -->
-        <div class="row">
-          <div class="col mb-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{{ property.property_name }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Property Description</h6>
-                <p class="card-text">{{ property.property_description }}</p>
-                <a href="#" class="card-link">Contact Us</a>
-              </div>
+      <div class="row">
+        <div class="col mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ property.property_name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Property Description
+              </h6>
+              <p class="card-text">{{ property.property_description }}</p>
+              <!-- Button trigger modal -->
+              <a
+                href="#"
+                class="card-link"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                >Contact Us</a
+              >
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <div class="card text-center">
-              <div class="card-header">
-                Featured Content
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Relevant Ad</h5>
-                <p class="card-text">Ads can be placed here</p>
-                <a href="#" class="btn btn-primary">Mabati Rolling Mills</a>
-              </div>
-              <div class="card-footer text-muted">
-                www.mrm.com
-              </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card text-center">
+            <div class="card-header">Featured Content</div>
+            <div class="card-body">
+              <h5 class="card-title">Relevant Ad</h5>
+              <p class="card-text">Ads can be placed here</p>
+              <a href="#" class="btn btn-primary">Mabati Rolling Mills</a>
             </div>
+            <div class="card-footer text-muted">www.mrm.com</div>
           </div>
         </div>
+      </div>
       <!-- </div> -->
-      
     </div>
 
     <div class="col">
@@ -82,7 +110,7 @@
         <div class="card-body">
           <h5 class="card-title">Details</h5>
           <ul>
-            <li><b>Type:</b> {{ property.property_type }}</li>            
+            <li><b>Type:</b> {{ property.property_type }}</li>
             <li><b>Price Range:</b> {{ property.property_price }}</li>
             <li><b>Location:</b> {{ property.property_location }}</li>
             {# Dynamic Features: for feature in features.split('|') #}
@@ -95,25 +123,30 @@
         </div> -->
       </div>
     </div>
-  
+
     <div class="col">
       <div class="card text-center">
-        <div class="card-header">
-          Contact Property Owner
-        </div>
+        <div class="card-header">Contact Property Owner</div>
         <div class="card-body">
-          <h5 class="card-title">{{ owner.first_name }} {{ owner.last_name }}</h5>
-          <p class="card-text">{{ property.additionalContactInfo }}</p>
-          <a href="#" class="btn btn-primary">Contact Us</a>
+          <h5 class="card-title">
+            {{ owner.first_name }} {{ owner.last_name }}
+          </h5>
+          <p class="card-text">{{ owner.businessName }}</p>
+          <!-- Button trigger modal -->
+          <a
+            href="#"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+            >Contact Us</a
+          >
         </div>
         <div class="card-footer text-muted">
           {{ owner.first_name }} {{ owner.last_name }}
         </div>
       </div>
     </div>
-
   </div>
-  
 
   <div class="card my-4 text-center border-dark">
     <div class="card-header bg-white">
@@ -122,21 +155,34 @@
   </div>
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
-  {% for property in similarProperty %}
+    {% for property in similarProperty %}
     <div class="col">
       <div class="card h-100">
         {# property.property_images #}
-        <img src="{{ url_for('static', filename=similarPropertyImages[loop.index0]) }}" class="card-img-top" alt="...">
+        <img
+          src="{{ url_for('static', filename=similarPropertyImages[loop.index0]) }}"
+          class="card-img-top"
+          alt="..."
+        />
         <div class="card-body">
           <h4 class="card-title">{{ property.property_name }}</h4>
           <p class="card-text"><b>Type:</b> {{ property.property_type }}</p>
-          <p class="card-text"><b>Price Range:</b> {{ property.property_price }}</p>
-          <p class="card-text"><b>Location:</b> {{ property.property_location }}</p>
+          <p class="card-text">
+            <b>Price Range:</b> {{ property.property_price }}
+          </p>
+          <p class="card-text">
+            <b>Location:</b> {{ property.property_location }}
+          </p>
         </div>
         <div class="card-footer">
           <div class="d-grid gap-2 mx-auto">
-                <a type="button" href="{{ url_for('more_info_view.more_info',property_id=property.id) }}" class="btn btn-primary">More Info</a>
-            </div>
+            <a
+              type="button"
+              href="{{ url_for('more_info_view.more_info',property_id=property.id) }}"
+              class="btn btn-primary"
+              >More Info</a
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -145,11 +191,126 @@
 
   <div class="card my-4 text-center border-dark">
     <div class="card-header bg-white">
-      <a href="#viewMore" class="btn btn-outline-primary">View More Similar Property</a>
+      <a href="#viewMore" class="btn btn-outline-primary"
+        >View More Similar Property</a
+      >
     </div>
   </div>
 
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            New message To : {{ owner.businessName if owner.businessName else
+            owner.first_name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="Phone-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Phone"
+                type="button"
+                role="tab"
+                aria-controls="Phone"
+                aria-selected="true"
+              >
+                Phone
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="Email-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Email"
+                type="button"
+                role="tab"
+                aria-controls="Email"
+                aria-selected="false"
+              >
+                Email
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div
+              class="tab-pane fade show active"
+              id="Phone"
+              role="tabpanel"
+              aria-labelledby="Phone-tab"
+            >
+            <h3 class="text-center mt-3">{{ owner.user_phone }}</h3>
+          </div>
+            <div
+              class="tab-pane fade"
+              id="Email"
+              role="tabpanel"
+              aria-labelledby="Email-tab"
+            >
+            <form
+            action="{{ url_for('messenger_view.send_message', propertyId=property.id) }}"
+            method="POST"
+          >
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
+                >Recipient:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="recipient-name"
+                value="{{ owner.user_email}}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea
+                class="form-control"
+                id="message-text"
+                rows="4"
+                name="msgText"
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Send message
+              </button>
+            </div>
+          </form>
+          </div>
+          </div>
 
-
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
 </div>
-{% endblock content %}
