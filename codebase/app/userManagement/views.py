@@ -1,10 +1,14 @@
+import os
+import secrets
+import time
 from flask import Blueprint, render_template, url_for, request, flash, redirect
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
-from app.models import User
-from app import db, mail
+from werkzeug.utils import secure_filename
+from app.models import User, Plans
+from app import db, mail, create_app
 
 
 # Create Blueprint
@@ -213,7 +217,90 @@ def logout():
 @auth_login_view.route('/profile/', methods=['GET','POST'])
 @login_required
 def profile():
-    return render_template("userManagement/profile.html")
+    accountType = current_user.businessAccount
+    plan = None
+    # Check if user is on business account; then get the business plan (tier)
+    if accountType == 1:
+        businessPlanID = current_user.businessPlan
+        plan = Plans.query.filter_by(id=businessPlanID).first()
+        print(plan)
+
+    # Nyupal Contact
+    nyupalContact = {
+        'businessName':"Nyupal",
+        "businessEmail":"support@nyupal.com",
+        "businessPhone":"+254712345678",
+    }
+
+    if request.method == 'POST':
+        editProfileForm = request.form
+        profileFirst = editProfileForm['profileFirst']
+        profileLast = editProfileForm['profileLast']
+        profileEmail = editProfileForm['profileEmail']
+        profilePhone = editProfileForm['profilePhone']
+
+        # Not all Accounts are Business Accounts thus this field is optional.
+        profileBusinessName = editProfileForm.get('profileBusinessName')
+
+        # * INPUT VALIDATION
+        error = ""
+        if profileFirst == "" or profileLast == "" or profileEmail == "" or profilePhone == "" :
+            error = "Please fill in all the Required Fields."
+            flash(
+                f"{error}")
+            return redirect(url_for('auth_login_view.profile'))
+
+        #! IMAGE PROCESSING, MORE OR LESS
+        profile_image=''
+        if request.files != None:
+            # Main Image
+            editProfilePic = request.files['profilePic']
+            #! SECURITY CHECK - Do not allow malicious uploads
+            if editProfilePic.filename:
+                # * 2. Ensure file extension is allowed. (Images only) -> As defined in config.py
+                if allowed_image(editProfilePic.filename):
+                    # print(os.getcwd())
+                    # * 3. Ensure the file itself isn't dangerous.
+                    editProfilePic_filename = secure_filename(editProfilePic.filename)
+                    # image = property/{property_type}/random_str_timestamp.extension
+                    profile_image_name = f'{secrets.token_hex(2)}{secrets.token_hex(3)}_{str(time.time()).split(".")[0]}.{editProfilePic_filename.split(".")[-1].lower()}'
+                    profile_image = f'userManagement/users/{profile_image_name}'
+                    # print(editProfilePic_filename)
+                    #! Restrict Filesize
+                    # ? By default Flask throws a HTTP 413 error if MAX_CONTENT_LENGTH is exceeded.
+                    # Save the image
+                    editProfilePic.save(os.path.join(
+                        create_app().config["IMAGE_UPLOADS_USER"], profile_image))
+
+                else:
+                    error_message = "Please upload an image with accepted extension (.png, .jpeg, .jpg)"
+                    flash(f"{error_message}")
+                    print(error_message)
+                    return redirect(url_for('auth_login_view.profile'))
+
+        user = User.query.filter_by(id=current_user.id).first()
+
+        try:
+            user.first_name = profileFirst
+            user.last_name = profileLast
+            user.user_email = profileEmail
+            user.user_phone = profilePhone
+            user.businessName = profileBusinessName if profileBusinessName else None
+            user.user_pic = profile_image_name if profile_image_name else 'default.png'
+            
+            # Write changes to DB
+            db.session.commit()
+
+            flash("Your Profile Has Been Updated Successfully.")
+            return redirect(url_for('auth_login_view.profile'))
+        except:
+            flash("An Error Ocurred: Changes Not Saved!")
+            return redirect(url_for('auth_login_view.profile'))
+
+
+    return render_template("userManagement/profile.html",
+                           plan=plan,
+                           owner=nyupalContact)
 
 
 
@@ -288,3 +375,19 @@ def reset_token(token):
     
     return render_template('userManagement/reset_pword.html')
 
+
+
+def allowed_image(filename):
+
+    # We only want files with a . in the filename
+    if not "." in filename:
+        return False
+
+    # Split the extension from the filename
+    ext = filename.rsplit(".", 1)[1]
+
+    # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
+    if ext.upper() in create_app().config["ALLOWED_IMAGE_EXTENSIONS"]:
+        return True
+    else:
+        return False

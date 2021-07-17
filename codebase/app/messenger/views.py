@@ -32,6 +32,7 @@ Nyupal 2021
     print("email sent")
 
 
+
 @messenger_view.route('/send_message/<propertyId>', methods=['POST'])
 @login_required
 def send_message(propertyId):
@@ -57,4 +58,13 @@ def send_message(propertyId):
     send_email(owner,message)
     flash("Message Sent Successfully")
     return redirect(url_for('more_info_view.more_info',property_id=propertyId))
+
+
+@messenger_view.route('/send_nyupal_message', methods=['POST'])
+@login_required
+def send_nyupal_message():
+
+
+    flash("Message Sent Successfully")
+    return redirect(url_for('main_view.index'))
 

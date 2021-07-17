@@ -8,7 +8,9 @@
       <h2>Create an Account</h2>
     </div>
     <div class="card-body">
-      <form action="{{ url_for('auth_login_view.register') }}" method="POST">
+      <form action="{{ url_for('auth_login_view.register') }}"
+       method="POST"
+       enctype="multipart/form-data">
           <div class="row">
             <div class="col-6">
               <div class="form-floating mb-3">

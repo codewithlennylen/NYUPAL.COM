@@ -91,7 +91,7 @@
                 {{ current_user.first_name }} {{ current_user.last_name }}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">View Profile</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth_login_view.profile') }}">View Profile</a></li>
                 {# Check if user is pseudo-admin #} {% if
                 current_user.businessAccount == 1 %}
                 <li>

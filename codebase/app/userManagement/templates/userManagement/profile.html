@@ -1,56 +1,457 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container">
-  <div class="content-section mt-3">
-    <div class="media">
-      <img
-        class="rounded-circle account-img"
-        src="{{ url_for('auth_login_view.static', filename='userManagement/users/'+current_user.user_pic) }}"
-      />
-      <div class="media-body">
-        <h2 class="account-heading">
-          {{ current_user.first_name }} {{ current_user.last_name }}
-        </h2>
-        <p class="text-secondary">{{ current_user.user_email }}</p>
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <h1 class="text-primary">Checkout & Manage Your Profile</h1>
+    </div>
+  </div>
+
+  <div class="card border-primary shadow mb-3">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img
+          src="{{ url_for('auth_login_view.static', filename='userManagement/users/'+current_user.user_pic) }}"
+          class="card-img-top rounded-circle img-thumbnail"
+          alt="{{ current_user.first_name }}'s Image"
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <!-- Button trigger modal -->
+          <a
+            href="#"
+            class="btn btn-outline-success mb-2"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+            >Edit Details</a
+          >
+          <p class="card-text">
+            <b>Username: </b>{{ current_user.first_name }} {{
+            current_user.last_name }}
+          </p>
+          <p class="card-text">
+            <b>Email Address: </b>{{ current_user.user_email }}
+          </p>
+          <p class="card-text">
+            <b>Phone Number: </b>{{ current_user.user_phone }}
+          </p>
+
+          <p class="card-text">
+            <b>Account Type: </b>{{ 'Standard User Account' if
+            current_user.businessAccount == 0 else 'Business Account' }}
+          </p>
+
+          <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card bg-light border-primary mb-3" style="width: 30rem;">
-    <img src="{{ url_for('auth_login_view.static', filename='userManagement/users/'+current_user.user_pic) }}" class="card-img-top rounded-circle img-thumbnail" alt="{{ current_user.first_name }}'s Image">
-    <div class="card-body">
-      <!-- <h5 class="card-title">Card title</h5> -->
-      <hr>
-      <form action="{{  url_for('auth_login_view.profile')}}" method="POST">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ current_user.first_name }}">
+  {% if current_user.businessAccount == 1 %}
+  <!-- Business Account -->
+
+  <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
+    <!-- Business Tier Summary -->
+    <div class="col">
+      <div class="card h-100 shadow">
+        <div class="card-body">
+          <h4 class="card-title">{{ plan.plan_name }}</h4>
+          <hr />
+
+          {% if plan.plan_name == "Standard Business Account" %}
+          <ul>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> List Your Property
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Free Admin Panel
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Customer Care Support
+            </li>
+            <!-- <li style="list-style: none;"><i class="bi bi-x-lg text-danger"></i> <s class="text-muted">Get A Verified Badge</s></li>
+            <li style="list-style: none;"><i class="bi bi-x-lg text-danger"></i> <s class="text-muted">Property is Promoted</s></li> -->
+          </ul>
+          </div>
+          <div class="card-footer d-grid bg-white">
+            <a
+              href="{{ url_for('finance_view.pricing') }}"
+              class="mt-2 btn btn-lg btn-outline-primary"
+              >Get More Features Today</a
+            >
+          </div>
+
+          {% elif plan.plan_name == "Verified Business Account" %}
+          <ul>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> List Your Property
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Free Admin Panel
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Customer Care Support
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Get A Verified Badge
+              alongside our Property
+            </li>
+          </ul>
         </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ current_user.last_name }}">
+          <div class="card-footer d-grid bg-white">
+            <a
+              href="{{ url_for('finance_view.pricing') }}"
+              class="mt-2 btn btn-lg btn-outline-primary"
+              >Get More Features Today</a
+            >
+          </div>
+
+          {% elif plan.plan_name == "Premium Business Account" %}
+          <ul>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> List Your Property
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Free Admin Panel
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Customer Care Support
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Get A Verified Badge
+              alongside our Property
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Your Property Gets
+              Featured Frequently
+            </li>
+          </ul>
         </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ current_user.user_email }}">
+        <div class="card-footer d-grid bg-white">
+          <a href="#" class="mt-2 btn btn-lg btn-outline-primary">All Good!</a>
         </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Phone Number</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ current_user.user_phone }}">
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Property Summary -->
+    <div class="col">
+      <div class="card h-100 shadow">
+        <div class="card-body">
+          <h4 class="card-title">Your Property</h4>
+          <hr />
+          {% if current_user.property %}
+          <div class="d-grid">
+            {% for property in current_user.property %}
+            <a href="{{ url_for('business_admin_view.view_property',property_id=property.id) }}">{{ property.property_name }}</a>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="card-text">It Seems You Haven't Listed any Property.</p>
+          <p class="card-text">Listing Your Property only Takes 5 minutes.</p>
+          <p class="card-text">Get Started by <a href="{{ url_for('business_admin_view.add_property') }}">Clicking Here.</a></p>
+          {% endif %}
         </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Receive updates from Nyupal?</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ current_user.user_updates }}">
+        <div class="card-footer d-grid bg-white">
+          <a href="{{ url_for('business_admin_view.property_dashboard') }}" class="mt-2 btn btn-lg btn-outline-primary"
+            >Go to Property Dashboard</a
+          >
         </div>
-        <div class="mb-3">
-          <label for="formFile" class="form-label">Change profile picture</label>
-          <input class="form-control" type="file" id="formFile">
-        </div>
-        <button type="submit" class="btn btn-primary">Update Profile</button>
-      </form>
+      </div>
     </div>
   </div>
 
+  {% else %}
+  <!-- Standard User Account -->
+
+  <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
+    <!-- Upgrade Your Account -->
+    <div class="col">
+      <div class="card h-100 shadow">
+        <div class="card-body">
+          <h4 class="card-title">Do You Want To List Your Property?</h4>
+          <hr />
+          <p class="card-text">It's as Easy as 1,2,3</p>
+          <ul>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Register for A
+              Business Account
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> Upload Details of Your
+              Property
+            </li>
+            <li style="list-style: none">
+              <i class="bi bi-check-lg text-success"></i> That's It!
+            </li>
+          </ul>
+        </div>
+        <div class="card-footer d-grid bg-white">
+          <a href="{{ url_for('finance_view.pricing') }}" class="mt-2 btn btn-lg btn-outline-primary"
+            >List Your Property Today!</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Help -->
+    <div class="col">
+      <div class="card h-100 shadow">
+        <div class="card-body">
+          <h4 class="card-title">Need Assistance?</h4>
+          <hr />
+
+          <p class="card-text">Feel Free to Reach out to Us.</p>
+          <!-- <p class="card-text"></p> -->
+        </div>
+        <div class="card-footer d-grid bg-white">
+          <!-- <a href="#" class="mt-2 btn btn-lg btn-outline-primary">Contact Us</a> -->
+                    <!-- Button trigger modal -->
+                    <a
+                    href="#"
+                    class="mt-2 btn btn-lg btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    >Contact Us</a
+                  >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">
+            Edit Your Profile
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form action="{{ url_for('auth_login_view.profile') }}" method="POST"
+        enctype="multipart/form-data">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="floatingInput"
+                    value="{{ current_user.first_name }}"
+                    name="profileFirst"
+                  />
+                  <label for="floatingInput">First Name</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="floatingInput"
+                    value="{{ current_user.last_name }}"
+                    name="profileLast"
+                  />
+                  <label for="floatingInput">Last Name</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input
+                type="email"
+                class="form-control"
+                id="floatingInput"
+                value="{{ current_user.user_email }}"
+                name="profileEmail"
+              />
+              <label for="floatingInput">Email address</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="floatingInput"
+                value="{{ current_user.user_phone }}"
+                name="profilePhone"
+              />
+              <label for="floatingInput">Phone Number</label>
+            </div>
+
+            {% if current_user.businessAccount == 1 %}
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="floatingInput"
+                value="{{ current_user.businessName }}"
+                name="profileBusinessName"
+              />
+              <label for="floatingInput">Business Name</label>
+            </div>
+            {% endif %}
+
+            <div class="mb-3">
+              <label for="formFile" class="form-label"
+                >Profile Picture</label
+              >
+              <input class="form-control" type="file" id="formFile" name="profilePic"/>
+            </div>
+
+            <!-- <button type="submit" class="btn btn-lg btn-primary">Register</button> -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-lg btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-lg btn-success">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nyupal Contact Modal -->
+  {# owner in this context is Nyupal contact #}
+  <div
+    class="modal fade"
+    id="exampleModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            New message To : {{ owner["businessName"] }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="Phone-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Phone"
+                type="button"
+                role="tab"
+                aria-controls="Phone"
+                aria-selected="true"
+              >
+                Phone
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="Email-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#Email"
+                type="button"
+                role="tab"
+                aria-controls="Email"
+                aria-selected="false"
+              >
+                Email
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div
+              class="tab-pane fade show active"
+              id="Phone"
+              role="tabpanel"
+              aria-labelledby="Phone-tab"
+            >
+            <h3 class="text-center mt-3">{{ owner["businessPhone"] }}</h3>
+          </div>
+            <div
+              class="tab-pane fade"
+              id="Email"
+              role="tabpanel"
+              aria-labelledby="Email-tab"
+            >
+            <form
+            action="{{ url_for('messenger_view.send_nyupal_message') }}"
+            method="POST"
+          >
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
+                >Recipient:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="recipient-name"
+                value="{{ owner['businessEmail']}}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea
+                class="form-control"
+                id="message-text"
+                rows="4"
+                name="msgText"
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Send message
+              </button>
+            </div>
+          </form>
+          </div>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 {% endblock content %}

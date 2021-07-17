@@ -282,7 +282,8 @@ def view_property(property_id):
 
         # Edit Owner Info
         owner.first_name = propertyEditForm["editContactName"].split(" ")[0]
-        owner.last_name = propertyEditForm["editContactName"].split(" ")[-1]
+        #? EdgeCase: User has firstname only. e.g. Google? -> Far-fetched? Maybe. Possible? Yes.
+        owner.last_name = propertyEditForm["editContactName"].split(" ")[-1] if propertyEditForm["editContactName"].split(" ")[-1] else ''
         owner.user_phone = propertyEditForm["editPhoneNumber"]
         owner.businessName = propertyEditForm["editBusinessName"]
 
