@@ -9,8 +9,7 @@ from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user' # Explicit is better than implicit.
-
-    # STUDENT INFORMATION   
+  
     id = db.Column(db.Integer, primary_key = True) # user's default id
     first_name = db.Column(db.String(50), nullable=False) # Lenny
     last_name = db.Column(db.String(50), nullable=False) # Ng'ang'a
@@ -50,12 +49,19 @@ class User(db.Model, UserMixin):
         lazy = True
     )
 
+    # user's star-rating.
+    ratings = db.relationship(
+        'Rating',
+        foreign_keys = 'Rating.user_id',
+        backref = 'userRating',
+        lazy = True
+    )
+
 
 # Property includes land and buildings
 class Property(db.Model):
     __tablename__ = 'property' # Explicit is better than implicit.
-
-    # STUDENT INFORMATION   
+ 
     id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
     property_name = db.Column(db.String(100), nullable=False)
     property_description = db.Column(db.String, nullable=False)
@@ -75,13 +81,21 @@ class Property(db.Model):
     property_owner = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
     # Additional Contact Information.
     additionalContactInfo = db.Column(db.String, nullable=True) # e.g. Manager, ABC Property Limited
+    
+    # RELATIONSHIPS
+    # star-rating tied to property.
+    ratings = db.relationship(
+        'Rating',
+        foreign_keys = 'Rating.property_id',
+        backref = 'buildingRating',
+        lazy = True
+    )
 
 
 # Plans entail the various pricing models available
 class Plans(db.Model):
     __tablename__ = 'plans' # Explicit is better than implicit.
 
-    # STUDENT INFORMATION   
     id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
     plan_name = db.Column(db.String(100), nullable=False)
     plan_price = db.Column(db.String(100), nullable=False)
@@ -94,3 +108,13 @@ class Plans(db.Model):
         backref = 'businessOwner',
         lazy = True
     )
+
+
+class Rating(db.Model):
+    __tablename__ = 'rating' # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
+    rating = db.Column(db.String(10), nullable=False)
+ 
