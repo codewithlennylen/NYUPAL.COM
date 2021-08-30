@@ -59,79 +59,79 @@
           />
           <div class="my-rating">
             <fieldset class="rating">
-              <input type="radio" id="star5" name="rating_{{ property.id }}" value="5" /><label
+              <input type="radio" onclick="ratingClicked(id);" id="star5_{{ property.id }}" name="rating_{{ property.id }}" value="5" /><label
                 class="full"
-                for="star5"
+                for="star5_{{ property.id }}"
                 title="Awesome - 5 stars"
               ></label>
               <input
-                type="radio"
-                id="star4half"
+                type="radio" onclick="ratingClicked(id);"
+                id="star4half_{{ property.id }}"
                 name="rating_{{ property.id }}"
-                value="4 and a half"
+                value="4.5"
               /><label
                 class="half"
-                for="star4half"
+                for="star4half_{{ property.id }}"
                 title="Pretty good - 4.5 stars"
               ></label>
-              <input type="radio" id="star4" name="rating_{{ property.id }}" value="4" /><label
+              <input type="radio" onclick="ratingClicked(id);" id="star4_{{ property.id }}" name="rating_{{ property.id }}" value="4" /><label
                 class="full"
-                for="star4"
+                for="star4_{{ property.id }}"
                 title="Pretty good - 4 stars"
               ></label>
               <input
-                type="radio"
-                id="star3half"
+                type="radio" onclick="ratingClicked(id);"
+                id="star3half_{{ property.id }}"
                 name="rating_{{ property.id }}"
-                value="3 and a half"
+                value="3.5"
               /><label
                 class="half"
-                for="star3half"
+                for="star3half_{{ property.id }}"
                 title="Meh - 3.5 stars"
               ></label>
-              <input type="radio" id="star3" name="rating_{{ property.id }}" value="3" /><label
+              <input type="radio" onclick="ratingClicked(id);" id="star3_{{ property.id }}" name="rating_{{ property.id }}" value="3" /><label
                 class="full"
-                for="star3"
+                for="star3_{{ property.id }}"
                 title="Meh - 3 stars"
               ></label>
               <input
-                type="radio"
-                id="star2half"
+                type="radio" onclick="ratingClicked(id);"
+                id="star2half_{{ property.id }}"
                 name="rating_{{ property.id }}"
-                value="2 and a half"
+                value="2.5"
               /><label
                 class="half"
-                for="star2half"
+                for="star2half_{{ property.id }}"
                 title="Kinda bad - 2.5 stars"
               ></label>
-              <input type="radio" id="star2" name="rating_{{ property.id }}" value="2" /><label
+              <input type="radio" onclick="ratingClicked(id);" id="star2_{{ property.id }}" name="rating_{{ property.id }}" value="2" /><label
                 class="full"
-                for="star2"
+                for="star2_{{ property.id }}"
                 title="Kinda bad - 2 stars"
               ></label>
               <input
-                type="radio"
-                id="star1half"
+                type="radio" onclick="ratingClicked(id);"
+                id="star1half_{{ property.id }}"
                 name="rating_{{ property.id }}"
-                value="1 and a half"
+                value="1.5"
               /><label
                 class="half"
-                for="star1half"
+                for="star1half_{{ property.id }}"
                 title="Meh - 1.5 stars"
               ></label>
-              <input type="radio" id="star1" name="rating_{{ property.id }}" value="1" /><label
+              <input type="radio" onclick="ratingClicked(id);" id="star1_{{ property.id }}" name="rating_{{ property.id }}" value="1" /><label
                 class="full"
-                for="star1"
+                for="star1_{{ property.id }}"
                 title="Sucks big time - 1 star"
               ></label>
               <input
-                type="radio"
-                id="starhalf"
+                type="radio" onclick="ratingClicked(id);"
+                id="starhalf_{{ property.id }}"
                 name="rating_{{ property.id }}"
-                value="half"
+                value="0.5"
               /><label
                 class="half"
-                for="starhalf"
+                for="starhalf_{{ property.id }}"
                 title="Sucks big time - 0.5 stars"
               ></label>
             </fieldset>
@@ -162,5 +162,39 @@
     {% endfor %}
   </div>
 </div>
+
+<script>
+  function ratingClicked(id){
+    selected = document.getElementById(id);
+    console.log(id); // Property ID -> string -> tokenize
+    console.log(selected.value);
+
+    // Package the data in a nicely wrapped JS Object
+    ratingObject = {
+      "string_id":id,
+      "rating":selected.value,
+    }
+
+    // Using JavaScript's Fetch API for Async Requests
+    fetch(`/rating-clicked`, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(ratingObject),
+      cache:"no-cache",
+      headers: new Headers({
+        "content-type": "application/json"
+      })
+    })
+    // What to do with the server's response. <After data has been processed by the server>
+    .then(function (response){
+      if (response.status !== 200){
+        console.log(`Request Failed with code: ${response.status}`)
+        return;
+      }
+    })
+
+
+  }
+</script>
 
 {% endblock content %}
