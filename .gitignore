@@ -115,3 +115,6 @@ dmypy.json
 
 # UI-Templates 
 mine/templates/
+
+# DB Migrations
+codebase/migrations/
