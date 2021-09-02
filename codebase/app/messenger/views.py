@@ -66,5 +66,5 @@ def send_nyupal_message():
 
 
     flash("Message Sent Successfully")
-    return redirect(url_for('main_view.index'))
+    return redirect(url_for('main_view.index',page_num=1))
 

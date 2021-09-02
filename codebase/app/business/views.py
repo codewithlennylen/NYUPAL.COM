@@ -22,7 +22,7 @@ business_admin_view = Blueprint('business_admin_view',
 def property_dashboard():
     # Check if user is admin!
     if current_user.businessAccount != 1:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     # list of properties listed / owned by the user.
     propertys = current_user.property
@@ -45,7 +45,7 @@ def property_dashboard():
 def add_property():
     # Check if user is admin!
     if current_user.businessAccount != 1:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     propertyTypes = ["Residential", "Commercial", "Land"]
     # This will be used to display and Ad on the Add-Property Page
@@ -184,7 +184,7 @@ def add_property():
 def view_property(property_id):
     # Check if user is admin!
     if current_user.businessAccount != 1:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     #! property_id should be randomCharacters -> Tom Scott
     property = Property.query.filter_by(id=int(property_id)).first()

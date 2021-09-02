@@ -20,7 +20,7 @@ auth_login_view = Blueprint('auth_login_view',
 @auth_login_view.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     if request.method == 'POST':
         login_form = request.form
@@ -44,7 +44,7 @@ def login():
             if check_password_hash(user.user_pword, login_pwd):
                 # flash("Login Successful.")
                 login_user(user,remember=login_remember)
-                return redirect(url_for('main_view.index'))
+                return redirect(url_for('main_view.index',page_num=1))
             else:
                 error = 'Login Failed. Please try again.'
         else:
@@ -60,7 +60,7 @@ def login():
 @auth_login_view.route('/register/', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     if request.method == 'POST':
         register_form = request.form
@@ -135,7 +135,7 @@ def register_business():
     on the platform
     """
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     if request.method == 'POST':
         register_form = request.form
@@ -211,7 +211,7 @@ def register_business():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main_view.index'))
+    return redirect(url_for('main_view.index',page_num=1))
 
 
 @auth_login_view.route('/profile/', methods=['GET','POST'])
@@ -321,7 +321,7 @@ Please DO NOT REPLY to this email.
 @auth_login_view.route("/reset_password/", methods=['GET','POST'])
 def reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
     
     if request.method == 'POST':
         reset_form = request.form
@@ -338,7 +338,7 @@ def reset_request():
 @auth_login_view.route("/reset_password/<token>", methods=['GET','POST'])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index'))
+        return redirect(url_for('main_view.index',page_num=1))
 
     user = User.verify_reset_token(token)
     if user is None:

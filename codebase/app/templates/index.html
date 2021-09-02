@@ -47,7 +47,7 @@
 
   <!-- List of property -->
   <div class="row row-cols-1 row-cols-md-4 g-4">
-    {% for property in propertys %}
+    {% for property in propertys.items %}
     <div class="col">
       <div class="card h-100">
         {# property.property_images #}
@@ -162,6 +162,43 @@
     {% endfor %}
   </div>
 </div>
+
+
+<!-- Pagination Object -->
+<nav aria-label="Page navigation" class="my-4">
+  <ul class="pagination justify-content-center"> 
+{% for page in propertys.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=2) %}
+    
+    {% if page %}
+    {% if page.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item"><a class="page-link" href="{{ url_for('main_view.index', page_num=page) }}">{{ page }}</a></li>
+
+    {% if page.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% endif %}
+
+    {% else %}
+      ...
+    {% endif %}
+
+    {% endfor %}
+
+  </ul>
+</nav>
+
+
+
 
 <script>
   function ratingClicked(id){

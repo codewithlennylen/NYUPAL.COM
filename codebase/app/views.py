@@ -13,12 +13,13 @@ from app import db
 main_view = Blueprint('main_view', __name__)
 
 
-@main_view.route('/')
-def index():
-    propertys = Property.query.all()
+@main_view.route('/index/<int:page_num>/')
+def index(page_num):
+    propertys = Property.query.paginate(
+        per_page=12, page=page_num, error_out=True)
 
     propertyImages = []
-    for property in propertys:
+    for property in propertys.items:
         # Getting the image dirs
         images = property.property_images.split('|')
         profilePic = images[0]  # get the primary image (property_profile_pic)
