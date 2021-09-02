@@ -1,8 +1,8 @@
-"""Model.Rating
+"""Rating.property_id -> db.String Failed
 
-Revision ID: c9bfe4ed6012
-Revises: 94456c5b40c6
-Create Date: 2021-08-26 16:52:45.960904
+Revision ID: 08ea874ecca4
+Revises: 
+Create Date: 2021-09-02 03:16:10.081268
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c9bfe4ed6012'
-down_revision = '94456c5b40c6'
+revision = '08ea874ecca4'
+down_revision = None
 branch_labels = None
 depends_on = None
 

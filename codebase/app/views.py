@@ -1,6 +1,13 @@
-from flask import Blueprint, json, request, make_response, jsonify
-from flask import render_template
-from app.models import Property
+from flask import (Blueprint,
+                   json,
+                   request,
+                   make_response,
+                   jsonify,
+                   render_template,
+                   flash)
+from flask_login import current_user
+from app.models import Property, Rating
+from app import db
 
 # Create Blueprint
 main_view = Blueprint('main_view', __name__)
@@ -27,6 +34,7 @@ def index():
 @main_view.route('/rating-clicked', methods=['POST'])
 def rating_clicked():
     """Receives the rating; when a user stars a property
+    THIS FUNCTION IS CALLED ASYNCHRONOUSLY BY THE JS FETCH API FROM THE FRONTEND
 
     Returns:
         json: success
@@ -35,8 +43,23 @@ def rating_clicked():
     property_id = rating_object.get('string_id').split('_')[-1]
     property_rating = rating_object.get('rating')
 
-    print(property_id,
-          property_rating)
+    # print(property_id,
+    #       property_rating)
+
+    new_rating = Rating(
+        user_id=current_user.id,
+        property_id=int(property_id),
+        rating=property_rating
+    )
+
+    try:
+        db.session.add(new_rating)
+        db.session.commit()
+        print("Rating Success")
+    except Exception as e:
+        flash("Failed to Rate building")
+        #! Log Error.
+        print(f"Failed to Rate building: {e}")
 
     response = make_response(jsonify({"result": "success"}), 200)
 

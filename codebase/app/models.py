@@ -115,6 +115,6 @@ class Rating(db.Model):
 
     id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
     user_id = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
+    #! Property_id to Integer type -> enumeration vulnerability if integers are used
     property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
     rating = db.Column(db.String(10), nullable=False)
- 
