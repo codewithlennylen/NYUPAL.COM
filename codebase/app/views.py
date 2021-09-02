@@ -25,7 +25,7 @@ def index(page_num):
         profilePic = images[0]  # get the primary image (property_profile_pic)
         propertyImages.append(profilePic)
 
-    print(propertyImages)
+    # print(propertyImages)
 
     return render_template("index.html",
                            propertys=propertys,
