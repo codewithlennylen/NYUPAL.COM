@@ -1,3 +1,4 @@
+
 from flask import (Blueprint,
                    json,
                    request,
@@ -6,7 +7,7 @@ from flask import (Blueprint,
                    render_template,
                    flash)
 from flask_login import current_user
-from app.models import Property, Rating
+from app.models import Property, Rating, User
 from app import db
 
 # Create Blueprint
@@ -19,17 +20,22 @@ def index(page_num):
         per_page=12, page=page_num, error_out=True)
 
     propertyImages = []
+    property_verified = {}
     for property in propertys.items:
         # Getting the image dirs
         images = property.property_images.split('|')
         profilePic = images[0]  # get the primary image (property_profile_pic)
         propertyImages.append(profilePic)
+        owner = User.query.filter_by(id=property.property_owner).first()
+        if owner:
+            property_verified[property.id] = 1 if owner.businessPlan == 2 or owner.businessPlan == 3 else 0
 
     # print(propertyImages)
 
     return render_template("index.html",
                            propertys=propertys,
-                           propertyImages=propertyImages)
+                           propertyImages=propertyImages,
+                           property_verified=property_verified)
 
 
 @main_view.route('/rating-clicked', methods=['POST'])

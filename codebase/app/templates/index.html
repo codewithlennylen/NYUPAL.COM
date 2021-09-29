@@ -57,6 +57,7 @@
             class="card-img-top"
             alt="Property Image"
           />
+          <!-- Star-Rating -->
           <div class="my-rating">
             <fieldset class="rating">
               <input type="radio" onclick="ratingClicked(id);" id="star5_{{ property.id }}" name="rating_{{ property.id }}" value="5" /><label
@@ -87,12 +88,12 @@
               /><label
                 class="half"
                 for="star3half_{{ property.id }}"
-                title="Meh - 3.5 stars"
+                title="3.5 stars"
               ></label>
               <input type="radio" onclick="ratingClicked(id);" id="star3_{{ property.id }}" name="rating_{{ property.id }}" value="3" /><label
                 class="full"
                 for="star3_{{ property.id }}"
-                title="Meh - 3 stars"
+                title="3 stars"
               ></label>
               <input
                 type="radio" onclick="ratingClicked(id);"
@@ -102,12 +103,12 @@
               /><label
                 class="half"
                 for="star2half_{{ property.id }}"
-                title="Kinda bad - 2.5 stars"
+                title="2.5 stars"
               ></label>
               <input type="radio" onclick="ratingClicked(id);" id="star2_{{ property.id }}" name="rating_{{ property.id }}" value="2" /><label
                 class="full"
                 for="star2_{{ property.id }}"
-                title="Kinda bad - 2 stars"
+                title="2 stars"
               ></label>
               <input
                 type="radio" onclick="ratingClicked(id);"
@@ -117,12 +118,12 @@
               /><label
                 class="half"
                 for="star1half_{{ property.id }}"
-                title="Meh - 1.5 stars"
+                title="1.5 stars"
               ></label>
               <input type="radio" onclick="ratingClicked(id);" id="star1_{{ property.id }}" name="rating_{{ property.id }}" value="1" /><label
                 class="full"
                 for="star1_{{ property.id }}"
-                title="Sucks big time - 1 star"
+                title="Terrible - 1 star"
               ></label>
               <input
                 type="radio" onclick="ratingClicked(id);"
@@ -132,13 +133,24 @@
               /><label
                 class="half"
                 for="starhalf_{{ property.id }}"
-                title="Sucks big time - 0.5 stars"
+                title="Terrible - 0.5 stars"
               ></label>
             </fieldset>
           </div>
         </div>
         <div class="card-body">
-          <h4 class="card-title">{{ property.property_name }}</h4>
+          {% if property_verified[property.id] %}
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 class="card-title">{{ property.property_name }}</h4>
+              <!-- <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+                Tooltip on top
+              </button> -->
+              <i class="fas fa-check-circle text-primary ml-auto"></i>
+            </div>
+          {% else %}
+            <h4 class="card-title">{{ property.property_name }}</h4>
+          {% endif %}
+
           <p class="card-text"><b>Type:</b> {{ property.property_type }}</p>
           <p class="card-text">
             <b>Price Range:</b> {{ property.property_price }}
