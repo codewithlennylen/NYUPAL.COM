@@ -117,4 +117,4 @@ dmypy.json
 mine/templates/
 
 # DB Migrations
-./migrations/
+migrations/
