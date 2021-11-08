@@ -33,6 +33,7 @@ def create_app():
     from .finance.views import finance_view
     from .messenger.views import messenger_view
 
+    # app.register_blueprint(main_view, url_prefix="/index/")
     app.register_blueprint(main_view)
     app.register_blueprint(auth_login_view, url_prefix="/user/")
     app.register_blueprint(more_info_view, url_prefix="/more_info/")

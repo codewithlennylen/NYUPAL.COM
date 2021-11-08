@@ -13,9 +13,9 @@ from app import db
 # Create Blueprint
 main_view = Blueprint('main_view', __name__)
 
-
-@main_view.route('/index/<int:page_num>/')
-def index(page_num):
+@main_view.route('/')
+@main_view.route('/<int:page_num>/')
+def index(page_num=1):
     propertys = Property.query.paginate(
         per_page=12, page=page_num, error_out=True)
 
