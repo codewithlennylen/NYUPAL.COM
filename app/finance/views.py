@@ -25,7 +25,9 @@ def pricing():
     #// if current_user.businessAccount != 1:
     #//     return redirect(url_for('main_view.index'))
 
-    return render_template("finance/pricing_details.html")
+    plans = Plans.query.order_by(Plans.plan_price).all()
+
+    return render_template("finance/pricing_details.html", plans=plans)
 
 
 @finance_view.route('/checkout/<plan>', methods=['GET', 'POST'])

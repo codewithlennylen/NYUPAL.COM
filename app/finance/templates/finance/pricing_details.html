@@ -11,9 +11,9 @@
     <div class="col">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h2 class="card-title">KES 500<i class="text-muted">/month</i></h2>
+          <h2 class="card-title">KES {{ plans[0]['plan_price'] }}<i class="text-muted">/month</i></h2>
           <h4 class="card-text my-4">
-            <b> Standard Business Account </b>
+            <b> {{ plans[0]['plan_name'] }} </b>
           </h4>
 
           <hr />
@@ -35,9 +35,9 @@
     <div class="col">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h2 class="card-title">KES 1500<i class="text-muted">/month</i></h2>
+          <h2 class="card-title">KES {{ plans[1]['plan_price'] }}<i class="text-muted">/month</i></h2>
           <h4 class="card-text my-4">
-            <b> Verified Business Account </b>
+            <b> {{ plans[1]['plan_name'] }} </b>
           </h4>
 
           <hr />
@@ -59,9 +59,9 @@
     <div class="col">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h2 class="card-title">KES 3000<i class="text-muted">/month</i></h2>
+          <h2 class="card-title">KES {{ plans[2]['plan_price'] }}<i class="text-muted">/month</i></h2>
           <h4 class="card-text my-4">
-            <b> Premium Business Account </b>
+            <b> {{ plans[2]['plan_name'] }} </b>
           </h4>
 
           <hr />

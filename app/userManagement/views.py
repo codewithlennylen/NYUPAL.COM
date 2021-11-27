@@ -134,6 +134,8 @@ def register_business():
     """Registers a business account. A business account can list and thus sell property
     on the platform
     """
+    default_business_plan = int(Plans.query.filter_by(plan_name='Standard Business Account').first().id)
+    print(f"default_business_plan: {default_business_plan}")
     if current_user.is_authenticated:
         return redirect(url_for('main_view.index',page_num=1))
 
@@ -188,7 +190,8 @@ def register_business():
             user_pword=generate_password_hash(register_pwd,method='sha256'),
             user_updates=register_updates,
             businessAccount = businessAccount,
-            businessName = businessName
+            businessName = businessName,
+            businessPlan=default_business_plan
         )
 
         try:

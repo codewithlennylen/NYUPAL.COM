@@ -182,7 +182,7 @@
               <div class="col-md-9">
                 <input
                   type="text"
-                  value="{{ current_user.user_phone }}"
+                  value="{{ current_user.user_phone if current_user.user_phone else '' }}"
                   class="form-control"
                   id="inputPhoneNumber"
                   name="newPhoneNumber"
@@ -197,7 +197,7 @@
               <div class="col-md-9">
                 <input
                   type="text"
-                  value="{{ current_user.businessName }}"
+                  value="{{ current_user.businessName if current_user.businessName else '' }}"
                   class="form-control"
                   id="inputBusinessName"
                   name="newBusinessName"

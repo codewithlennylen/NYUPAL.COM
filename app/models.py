@@ -98,7 +98,7 @@ class Plans(db.Model):
 
     id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
     plan_name = db.Column(db.String(100), nullable=False)
-    plan_price = db.Column(db.String(100), nullable=False)
+    plan_price = db.Column(db.Integer, nullable=False)
  
     # RELATIONSHIPS
     # accounts / users tied to a particular plan.
