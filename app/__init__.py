@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
+csrf = CSRFProtect()
 
 # Define app object > Application Factory Pattern.
 def create_app():
@@ -19,6 +21,7 @@ def create_app():
     db.init_app(app) # links to the database
     migrate.init_app(app, db) # Enables Database-Migrations
     mail.init_app(app)
+    csrf.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth_login_view.login'

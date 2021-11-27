@@ -69,7 +69,7 @@ def register():
         register_email = register_form['registerEmail']
         register_pwd = register_form['registerPassword']
         register_confirmPwd = register_form['registerConfirmPassword']
-        register_updates = 1 if request.form.get("registerUpdates") else 0
+        register_updates = 1 #if request.form.get("registerUpdates") else 0
 
         #* INPUT VALIDATION
         error=""

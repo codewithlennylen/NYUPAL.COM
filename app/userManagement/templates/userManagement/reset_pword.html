@@ -1,45 +1,62 @@
-{% extends "base.html" %} {% block content %}
+{% extends "userManagement/base2.html" %} {% block content %}
+
+<!-- <center> -->
+{# Flashed Messages #}
+{% with messages = get_flashed_messages() %} 
+{% if messages %} 
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible fade show mt-1" role="alert">
+  <strong>{{ message }}</strong>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  >
+    <span aria-hidden="true"></span>
+  </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
 
 <div class="container">
-
-
-  <div class="card mt-3 mb-3" style="width: 30rem;">
-    <div class="card-header">
-      <h2>Reset Your Password</h2>
-    </div>
-    <div class="card-body">
-      <form action="" method="POST">
-        <div class="form-floating mb-3">
-          <input
-            type="password"
-            class="form-control"
-            id="floatingPassword"
-            placeholder="Password"
-            name="resetPassword"
-          />
-          <label for="floatingPassword">New Password</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input
-              type="password"
-              class="form-control"
-              id="floatingPassword"
-              placeholder="Password"
-              name="resetConfirmPassword"
-            />
-            <label for="floatingPassword">Confirm New Password</label>
-          </div>
-        <!-- <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1"
-          name="registerUpdates" />
-          <label class="form-check-label" for="exampleCheck1"
-            >Receive Updates</label
-          >
-        </div> -->
-        <button type="submit" class="btn btn-lg btn-primary">Save New Password</button>
-      </form>
+  <div class="container">
+    <div class="info">
+      <h1>Reset your Password</h1>
+      <span><a href="#">&copy; Nyupal - All Rights Reserved</a></span>
     </div>
   </div>
+  <div class="form">
+    <div class="thumbnail">
+      <img src="{{ url_for('auth_login_view.static', filename='userManagement/users/default.png') }}" />
+    </div>
+    <form action="" method="POST" class="login-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+      <input
+        type="password"
+        placeholder="New Password"
+        name="resetPassword"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Confirm New Password"
+        name="resetConfirmPassword"
+        required
+      />
+      <button type="submit">Confirm New Password</button>
+    </form>
+  </div>
 </div>
+
+
+
+
+
+
+
+
+
+
 
 {% endblock content %}

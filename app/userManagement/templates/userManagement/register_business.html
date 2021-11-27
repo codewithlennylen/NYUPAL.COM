@@ -1,116 +1,90 @@
-{% extends "base.html" %} {% block content %}
+{% extends "userManagement/base2.html" %} {% block content %}
+
+
+<!-- <center> -->
+{# Flashed Messages #} 
+{% with messages = get_flashed_messages() %} 
+{% if messages %} 
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible fade show mt-1" role="alert">
+  <strong>{{ message }}</strong>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  >
+    <span aria-hidden="true"></span>
+  </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
 
 <div class="container">
-
-
-  <div class="card mt-3 mb-3" style="width: 30rem">
-    <div class="card-header">
-      <h2>Create a Business Account</h2>
+  <div class="container">
+    <div class="info">
+      <h1>Business</h1>
+      <span><a href="#">&copy; Nyupal - All Rights Reserved</a></span>
     </div>
-    <div class="card-body">
-      <form action="{{ url_for('auth_login_view.register_business') }}" method="POST">
-          <div class="row">
-            <div class="col-6">
-              <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="floatingInput"
-                  placeholder="John"
-                  name="registerBusinessFirst"
-                />
-                <label for="floatingInput">First Name</label>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="floatingInput"
-                  placeholder="Smith"
-                  name="registerBusinessLast"
-                />
-                <label for="floatingInput">Last Name</label>
-              </div>
-            </div>
-          </div>
+  </div>
 
-        
-        <div class="form-floating mb-3">
+  <div class="form">
+    <div class="thumbnail">
+      <img src="{{ url_for('auth_login_view.static', filename='userManagement/users/default.png') }}" />
+    </div>
+    <form
+      action="{{ url_for('auth_login_view.register_business') }}"
+      method="POST"
+      class="login-form"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <input
-            type="text"
-            class="form-control"
-            id="floatingInput"
-            placeholder="ABC Properties Limited"
-            name="registerBusinessName"
+          type="text"
+          placeholder="First name"
+          name="registerBusinessFirst"
+          required
         />
-        <label for="floatingInput">Business Name <small>(Optional)</small></label>
-        </div>
+        <input
+          type="text"
+          placeholder="Last name"
+          name="registerBusinessLast"
+          required
+        />
+      <input
+          type="text"
+          placeholder="Business name (Optional)"
+          name="registerBusinessName"
+          required
+        />
+      <input
+        type="email"
+        placeholder="name@example.com"
+        name="registerBusinessEmail"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        name="registerBusinessPassword"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        name="registerBusinessConfirmPassword"
+        required
+      />
 
-        <div class="form-floating mb-3">
-          <input
-            type="email"
-            class="form-control"
-            id="floatingInput"
-            placeholder="name@example.com"
-            name="registerBusinessEmail"
-          />
-          <label for="floatingInput">Email address</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input
-            type="password"
-            class="form-control"
-            id="floatingPassword"
-            placeholder="Password"
-            name="registerBusinessPassword"
-          />
-          <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input
-            type="password"
-            class="form-control"
-            id="floatingPassword"
-            placeholder="Password"
-            name="registerBusinessConfirmPassword"
-          />
-          <label for="floatingPassword">Confirm Password</label>
-        </div>
-        <div class="mb-3 form-check">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            id="exampleCheck1"
-            name="registerBusinessUpdates"
-          />
-          <label class="form-check-label" for="exampleCheck1"
-            >Receive Updates</label
-          >
-        </div>
-
-        <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-lg btn-primary">
-            Create Business Account
-          </button>
-          <a
-            href="{{ url_for('auth_login_view.login') }}"
-            class="btn btn-lg btn-primary"
-            >Sign In Instead</a
-          >
-        </div>
-
-        <!-- <button type="submit" class="btn btn-lg btn-primary">Register</button> -->
-      </form>
-    </div>
-    <div class="card-footer">
-      Just Visiting?
-      <a href="{{ url_for('auth_login_view.register') }}"
-        >Create a Regular Account</a
-      >
-      Here.
-    </div>
+      <button type="submit">Create Business Account</button>
+      <p class="message">
+        Already have an Account?
+        <a href="{{ url_for('auth_login_view.login') }}">Click Here.</a>
+      </p>
+      <hr>
+      <p class="message">
+        Just Visiting?
+        <a href="{{ url_for('auth_login_view.register') }}">Click Here.</a>
+      </p>
+    </form>
   </div>
 </div>
 

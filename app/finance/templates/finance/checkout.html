@@ -28,6 +28,7 @@
         <p class="card-text">Enter till number: 12345</p>
         <p class="card-text">Enter Transaction Code Below and Click Confirm</p>
         <form action="#" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" name="transactionCode" placeholder="PXH1232OA32">
             <label for="floatingInput">Mpesa Transaction Code</label>
