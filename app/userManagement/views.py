@@ -333,9 +333,16 @@ def reset_request():
         reset_email = reset_form['resetEmail']
 	
         user = User.query.filter_by(user_email=reset_email).first()
-        send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.')
-        return redirect(url_for('auth_login_view.login'))
+        if user:
+            #! Bypassing email for now
+            # send_reset_email(user)
+            # flash('An email has been sent with instructions to reset your password.')
+            token = user.get_reset_token()
+            return redirect(url_for('auth_login_view.reset_token', token=token))
+        else:
+            flash("That Email does not exist. Check the spelling & Try Again.")
+            return redirect(url_for('auth_login_view.reset_request'))
+        
 
     return render_template('userManagement/reset_request.html')
 
