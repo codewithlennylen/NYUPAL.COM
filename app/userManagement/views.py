@@ -255,6 +255,7 @@ def profile():
 
         #! IMAGE PROCESSING, MORE OR LESS
         profile_image=''
+        profile_image_name = None
         if request.files != None:
             # Main Image
             editProfilePic = request.files['profilePic']
@@ -289,15 +290,16 @@ def profile():
             user.user_email = profileEmail
             user.user_phone = profilePhone
             user.businessName = profileBusinessName if profileBusinessName else None
-            user.user_pic = profile_image_name if profile_image_name else 'default.png'
+            user.user_pic = profile_image_name if profile_image_name else user.user_pic
             
             # Write changes to DB
             db.session.commit()
 
             flash("Your Profile Has Been Updated Successfully.")
             return redirect(url_for('auth_login_view.profile'))
-        except:
+        except Exception as e:
             flash("An Error Ocurred: Changes Not Saved!")
+            print(f"Error: {e}")
             return redirect(url_for('auth_login_view.profile'))
 
 
