@@ -6,6 +6,7 @@ load_dotenv(os.path.join(basedir, '.env')) # When running the application.
 # load_dotenv() # When using the dummy-database generators.
 
 # Image Dirs
+#? models.py default image is hardcoded
 DEFAULT_IMAGE = "https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/default_pp4iup.png"
 IMAGE_UPLOADS_USER = "./app/userManagement/static"
 IMAGE_UPLOADS_PROPERTY = "./app/static"
