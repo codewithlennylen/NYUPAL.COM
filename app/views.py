@@ -22,13 +22,16 @@ def index(page_num=1):
     propertyImages = []
     property_verified = {}
     for property in propertys.items:
+        # print(f"propertyDocs: {property.documents}")
         # Getting the image dirs
         images = property.property_images.split('|')
         profilePic = images[0]  # get the primary image (property_profile_pic)
         propertyImages.append(profilePic)
         owner = User.query.filter_by(id=property.property_owner).first()
-        if owner:
-            property_verified[property.id] = 1 if owner.businessPlan == 2 or owner.businessPlan == 3 else 0
+        if property.documents:
+            #! is this check justified?
+            if owner:
+                property_verified[property.id] = 1 if property.documents[0].verified == 1 else 0
 
     # print(propertyImages)
 

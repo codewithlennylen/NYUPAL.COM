@@ -1,0 +1,185 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+  <div class="card my-4 text-center border-dark">
+    <div class="card-header bg-white">
+      <h1 class="text-primary">Upload Property Documents</h1>
+    </div>
+  </div>
+
+
+  <form
+    action="{{ url_for('business_admin_view.docs_upload', plan=plan) }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
+
+      <!-- Upload Instructions -->
+      <div class="col">
+        <div class="card h-100">
+          <center><h5 class="card-header">We need to Verify your Property.</h5></center>
+          <div class="card-body">
+            <p>Before we an give you the badge <i class="fas fa-check-circle text-primary ml-auto"></i>, due diligence has to be performed. </p>
+            <ol>
+              <li>Start by Uploading Essential Documents about Your Property.</li>
+              <li>Upload all the documents as directed.</li>
+              <li>Relax and let us get to work.</li>
+              <li>Our team will contact you as soon as the process is complete.</li>
+            </ol>
+            <div class="mb-3 row">
+              <!-- Put Ad (banner) or something here -->
+              <!-- <img src="{{ bannerAd }}" class="img-fluid" style="max-height: 10%;" alt="Advertisement"> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Info -->
+      <div class="col">
+        <div class="card h-100">
+          <center><h5 class="card-header">Upload Documents as Directed Below</h5></center>
+          <div class="card-body">
+            <!-- <h5 class="card-title">Details</h5> -->
+
+            <div class="mb-3 row">
+              <label for="inputPropertyName" class="col-md-3 col-form-label"
+                >Property Name:
+              </label>
+              <div class="col-md-9">
+                <select
+                    class="form-select"
+                    id="inputPropertyType"
+                    aria-label="Default select example"
+                    name="selectedProperty"
+                  >
+                    <option selected>Select From Below</option>
+                    {% for p in userProperty %}
+                      <option value="{{ p.id }}">{{ p.property_name }} - {{ p.property_location }}</option>
+                    {% endfor %}
+                  </select>
+              </div>
+            </div>
+            <!-- <div class="mb-3 row"> -->
+              <!-- <h6 class="card-subtitle mb-2 text-muted">
+                Property Description
+              </h6>
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="5"
+                name="newPropertyDescription"
+              >
+                
+              </textarea> -->
+            <!-- </div> -->
+            <div class="mb-3 row">
+            <center>
+              <h4>
+                <!-- Button trigger modal -->
+                <button
+                  type="button"
+                  class="btn mt-3 btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#staticBackdropAddPropertyDocs"
+                >
+                  Click Here to Upload
+                </button>
+              </h4>
+            </center>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--  Property-Images Modal -->
+    <div
+      class="modal fade"
+      id="staticBackdropAddPropertyDocs"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropAddPropertyDocsLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropAddPropertyDocsLabel">
+              Upload Property Documents
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <b><p>All Documents Listed are Required.</p></b>
+            <div class="mb-3">
+              <label for="formFile" class="form-label"
+                >Scanned Title Deed (PDF)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFile"
+                name="propertyDocTitleDeed"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="formFileMultiple1" class="form-label"
+                >Scanned National ID (PDF)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple1"
+                name="propertyDocNatId"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="formFileMultiple2" class="form-label"
+                >Latest Scanned Property Tax Receipt (PDF)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple2"
+                name="propertyDocTaxReceipt"
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              data-bs-dismiss="modal"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="d-grid mt-3 mb-5">
+      <button type="submit" class="btn btn-lg btn-success">Click to Submit</button>
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

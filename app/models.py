@@ -58,6 +58,14 @@ class User(db.Model, UserMixin):
         lazy = True
     )
 
+    # user's star-rating.
+    property_documents = db.relationship(
+        'PropertyDocuments',
+        foreign_keys = 'PropertyDocuments.user_id',
+        backref = 'userPropertyDocuments',
+        lazy = True
+    )
+
 
 # Property includes land and buildings
 class Property(db.Model):
@@ -91,6 +99,27 @@ class Property(db.Model):
         backref = 'buildingRating',
         lazy = True
     )
+
+    # Documents tied to property.
+    documents = db.relationship(
+        'PropertyDocuments',
+        foreign_keys = 'PropertyDocuments.property_id',
+        backref = 'buildingPropertyDocuments',
+        lazy = True
+    )
+
+
+class PropertyDocuments(db.Model):
+    __tablename__ = 'property_docs' # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
+    title_deed = db.Column(db.String(100), nullable=False)
+    national_id = db.Column(db.String(100), nullable=False)
+    tax_receipt = db.Column(db.String(100), nullable=False)
+    # 0 - ongoing, 1 - passed, 3 - rejected, 4 - flagged
+    verified = db.Column(db.Integer, nullable=True, default = 0)
 
 
 # Plans entail the various pricing models available

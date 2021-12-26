@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from werkzeug.utils import secure_filename
-from app.models import User, Property
+from app.models import User, Property, PropertyDocuments
 from app import db, mail, create_app
 import time
 import os
@@ -319,6 +319,104 @@ def view_property(property_id):
                            property=property,
                            owner=owner,
                            propertyImages=propertyImages,)
+
+
+@business_admin_view.route('/docs/<plan>', methods=['GET', 'POST'])
+@login_required
+def docs_upload(plan):
+    userProperty = current_user.property
+
+    if request.method == 'POST':
+        propertyEditForm = request.form
+        selectedProperty = propertyEditForm["selectedProperty"].strip()
+
+        if selectedProperty not in [str(uProperty.id) for uProperty in userProperty]:
+            error_message = "Please Select the Property."
+            flash(f"{error_message}")
+            print(error_message)
+            return redirect(url_for('business_admin_view.docs_upload',plan=plan))
+
+
+        if request.files != None:
+            cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
+                          api_secret=os.getenv('API_SECRET'))
+            propertyDocTitleDeed = request.files['propertyDocTitleDeed']
+            propertyDocNatId = request.files['propertyDocNatId']
+            propertyDocTaxReceipt = request.files['propertyDocTaxReceipt']
+
+            print(f"empty file: {propertyDocTitleDeed} ==> {propertyDocTitleDeed.filename}")
+
+            expectedDocumentsList = [propertyDocTitleDeed, propertyDocNatId,
+                                  propertyDocTaxReceipt]
+
+            propertyDocumentsCombined = []
+            for index, doc in enumerate(expectedDocumentsList):
+                property_documents = ''
+                #! SECURITY CHECK - Do not allow malicious uploads
+                if doc.filename:
+                    # * 2. Ensure file extension is allowed. (Images only) -> As defined in config.py
+                    # print(doc.filename)
+                    if allowed_image(doc.filename):
+                        # print(os.getcwd())
+                        # * 3. Ensure the file itself isn't dangerous.
+                        doc_filename = secure_filename(doc.filename)
+                        # document = property/random_str_timestamp.extension
+                        property_documents = f'property/{secrets.token_hex(2)}{secrets.token_hex(3)}_{str(time.time()).split(".")[0]}.{doc_filename.split(".")[-1].lower()}'
+                        # print(doc_filename)
+                        # print(property_documents)
+                        #! Restrict Filesize
+                        # ? By default Flask throws a HTTP 413 error if MAX_CONTENT_LENGTH is exceeded.
+                        # Save the image
+                        doc.save(os.path.join(
+                            create_app().config["IMAGE_UPLOADS_PROPERTY"], property_documents))
+                        cloudinary_docFilename = os.path.join(create_app().config["IMAGE_UPLOADS_PROPERTY"],property_documents)
+                        # print(cloudinary_docFilename)
+                        upload_result = cloudinary.uploader.upload(cloudinary_docFilename)
+                        print(f"upload_result: {upload_result['secure_url']}")
+                        property_documents = upload_result['secure_url']
+
+                    else:
+                        error_message = "Please upload a Document with accepted extension (png, jpeg, jpg or pdf)"
+                        flash(f"{error_message}")
+                        print(error_message)
+                        return redirect(url_for('business_admin_view.docs_upload',plan=plan))
+                else:
+                    error_message = "Please Upload All Documents as Directed."
+                    flash(f"{error_message}")
+                    print(error_message)
+                    return redirect(url_for('business_admin_view.docs_upload',plan=plan))
+
+                propertyDocumentsCombined.append(property_documents)
+
+
+        # store property in db
+        new_documents = PropertyDocuments(
+            user_id = int(current_user.id),
+            property_id = int(selectedProperty),
+            title_deed = propertyDocumentsCombined[0],
+            national_id = propertyDocumentsCombined[1],
+            tax_receipt = propertyDocumentsCombined[2],
+        )
+
+        try:
+            # Try adding PropertyDocuments object to database.
+            db.session.add(new_documents)
+            db.session.commit()
+
+            flash(
+                f"Your Documents have been Uploaded Successfully.")
+            return redirect(url_for('finance_view.checkout',plan=plan))
+        except Exception as e:
+            # Log this SERIOUS issue > Report to Developer
+            error = e
+            print(error)
+            flash(f"Failed!! Please Contact Nyupal for further assistance.")
+        
+
+
+    return render_template('business/verify_docs.html',
+    userProperty=userProperty,
+    plan=plan)
 
 
 def allowed_image(filename):

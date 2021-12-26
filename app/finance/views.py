@@ -40,6 +40,8 @@ def checkout(plan):
 
     if plan == "standard":
         planDetails = Plans.query.filter_by(plan_name="Standard Business Account").first()
+
+    #! Check for token to ensure user didn't skip document upload step.
     elif plan == "verified":
         planDetails = Plans.query.filter_by(plan_name="Verified Business Account").first()
     elif plan == "premium":

@@ -6,9 +6,10 @@ load_dotenv(os.path.join(basedir, '.env')) # When running the application.
 # load_dotenv() # When using the dummy-database generators.
 
 # Image Dirs
+DEFAULT_IMAGE = "https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/default_pp4iup.png"
 IMAGE_UPLOADS_USER = "./app/userManagement/static"
 IMAGE_UPLOADS_PROPERTY = "./app/static"
-ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF"]
+ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF", "PDF"]
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024 # Max-filesize set at 10MB. Otherwise throws HTTP 413 error
 
 DEBUG = True
