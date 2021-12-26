@@ -26,7 +26,10 @@ class User(db.Model, UserMixin):
     businessAccount = db.Column(db.Integer, nullable = True, default=0)
     businessPlan = db.Column(db.Integer, db.ForeignKey('plans.id') ,nullable=True)
     # This will be displayed on the Contact Card on the more_info page of a property
-    businessName = db.Column(db.String(150), nullable = True) 
+    businessName = db.Column(db.String(150), nullable = True)
+    
+    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
+
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.create_app().config['SECRET_KEY'], expires_sec)
@@ -92,6 +95,8 @@ class Property(db.Model):
     # Additional Contact Information.
     additionalContactInfo = db.Column(db.String, nullable=True) # e.g. Manager, ABC Property Limited
     
+
+    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
     # RELATIONSHIPS
     # star-rating tied to property.
     ratings = db.relationship(
@@ -122,6 +127,8 @@ class PropertyDocuments(db.Model):
     # 0 - ongoing, 1 - passed, 3 - rejected, 4 - flagged
     verified = db.Column(db.Integer, nullable=True, default = 0)
 
+    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
+
 
 # Plans entail the various pricing models available
 class Plans(db.Model):
@@ -130,6 +137,8 @@ class Plans(db.Model):
     id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
     plan_name = db.Column(db.String(100), nullable=False)
     plan_price = db.Column(db.Integer, nullable=False)
+
+    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
  
     # RELATIONSHIPS
     # accounts / users tied to a particular plan.
@@ -149,3 +158,5 @@ class Rating(db.Model):
     #! Property_id to Integer type -> enumeration vulnerability if integers are used
     property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
     rating = db.Column(db.String(10), nullable=False)
+
+    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
