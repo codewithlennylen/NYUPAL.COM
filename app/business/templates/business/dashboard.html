@@ -29,7 +29,7 @@
       <div class="card h-100 border-dark">
         {# property.property_images #}
         <img
-          src="{{ url_for('static', filename=propertyImages[loop.index0]) }}"
+          src="{{ propertyImages[loop.index0] }}"
           class="card-img-top"
           alt="..."
         />

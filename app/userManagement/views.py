@@ -9,7 +9,9 @@ from flask_mail import Message
 from werkzeug.utils import secure_filename
 from app.models import User, Plans
 from app import db, mail, create_app
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Create Blueprint
 auth_login_view = Blueprint('auth_login_view',
@@ -17,10 +19,11 @@ auth_login_view = Blueprint('auth_login_view',
                             static_folder='static',
                             template_folder='templates')
 
+
 @auth_login_view.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index',page_num=1))
+        return redirect(url_for('main_view.index', page_num=1))
 
     if request.method == 'POST':
         login_form = request.form
@@ -28,14 +31,13 @@ def login():
         login_pwd = login_form['loginPassword']
         login_remember = True if request.form.get("loginRemember") else False
 
-        #* INPUT VALIDATION
-        error=""
+        # * INPUT VALIDATION
+        error = ""
         if login_email == "" or login_pwd == "":
-            error="Please fill in all the fields."
+            error = "Please fill in all the fields."
             flash(
                 f"{error}")
             return redirect(url_for('auth_login_view.login'))
-
 
         user = User.query.filter_by(user_email=login_email).first()
 
@@ -43,12 +45,12 @@ def login():
         if user:
             if check_password_hash(user.user_pword, login_pwd):
                 # flash("Login Successful.")
-                login_user(user,remember=login_remember)
-                return redirect(url_for('main_view.index',page_num=1))
+                login_user(user, remember=login_remember)
+                return redirect(url_for('main_view.index', page_num=1))
             else:
                 error = 'Login Failed. Please try again.'
         else:
-            error= 'Login Failed. Do you have an account?'
+            error = 'Login Failed. Do you have an account?'
 
         if error:
             flash(f"{error}")
@@ -60,7 +62,7 @@ def login():
 @auth_login_view.route('/register/', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index',page_num=1))
+        return redirect(url_for('main_view.index', page_num=1))
 
     if request.method == 'POST':
         register_form = request.form
@@ -69,18 +71,18 @@ def register():
         register_email = register_form['registerEmail']
         register_pwd = register_form['registerPassword']
         register_confirmPwd = register_form['registerConfirmPassword']
-        register_updates = 1 #if request.form.get("registerUpdates") else 0
+        register_updates = 1  # if request.form.get("registerUpdates") else 0
 
-        #* INPUT VALIDATION
-        error=""
+        # * INPUT VALIDATION
+        error = ""
         if register_fname == "" or register_lname == "" or register_email == "" or register_pwd == "":
-            error="Please fill in all the fields."
+            error = "Please fill in all the fields."
             flash(
                 f"{error}")
             return redirect(url_for('auth_login_view.register'))
 
-        #* USER VALIDATION
-        
+        # * USER VALIDATION
+
         # Ensure email is unique
         emailsInDB = User.query.filter_by(user_email=register_email).first()
         if emailsInDB:
@@ -90,7 +92,7 @@ def register():
         if register_pwd != register_confirmPwd:
             error = "The passwords do not match. Please Try Again."
 
-        #* Edgecase-Failed: Redirect to register page for user to try again
+        # * Edgecase-Failed: Redirect to register page for user to try again
         if error:
             flash(
                 f"{error}")
@@ -101,12 +103,12 @@ def register():
         if register_updates:
             pass
             # register_updates = 1
-        
+
         new_user = User(
             first_name=register_fname,
             last_name=register_lname,
             user_email=register_email,
-            user_pword=generate_password_hash(register_pwd,method='sha256'),
+            user_pword=generate_password_hash(register_pwd, method='sha256'),
             user_updates=register_updates
         )
 
@@ -123,21 +125,19 @@ def register():
             error = e
             print(error)
 
-
-
-
-
     return render_template("userManagement/register.html")
+
 
 @auth_login_view.route('/register_business/', methods=['GET', 'POST'])
 def register_business():
     """Registers a business account. A business account can list and thus sell property
     on the platform
     """
-    default_business_plan = int(Plans.query.filter_by(plan_name='Standard Business Account').first().id)
+    default_business_plan = int(Plans.query.filter_by(
+        plan_name='Standard Business Account').first().id)
     print(f"default_business_plan: {default_business_plan}")
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index',page_num=1))
+        return redirect(url_for('main_view.index', page_num=1))
 
     if request.method == 'POST':
         register_form = request.form
@@ -146,22 +146,23 @@ def register_business():
         register_email = register_form['registerBusinessEmail']
         register_pwd = register_form['registerBusinessPassword']
         register_confirmPwd = register_form['registerBusinessConfirmPassword']
-        register_updates = 1 if request.form.get("registerBusinessUpdates") else 0
+        register_updates = 1 if request.form.get(
+            "registerBusinessUpdates") else 0
 
         # This is the only difference between a regular user and a seller / property owner
-        businessAccount = 1 # Admin-ish feature
+        businessAccount = 1  # Admin-ish feature
         businessName = register_form['registerBusinessName']
 
-        #* INPUT VALIDATION
-        error=""
+        # * INPUT VALIDATION
+        error = ""
         if register_fname == "" or register_lname == "" or register_email == "" or register_pwd == "":
-            error="Please fill in all the required fields."
+            error = "Please fill in all the required fields."
             flash(
                 f"{error}")
             return redirect(url_for('auth_login_view.register'))
 
-        #* USER VALIDATION
-        
+        # * USER VALIDATION
+
         # Ensure email is unique
         emailsInDB = User.query.filter_by(user_email=register_email).first()
         if emailsInDB:
@@ -171,7 +172,7 @@ def register_business():
         if register_pwd != register_confirmPwd:
             error = "The passwords do not match. Please Try Again."
 
-        #* Edgecase-Failed: Redirect to register page for user to try again
+        # * Edgecase-Failed: Redirect to register page for user to try again
         if error:
             flash(
                 f"{error}")
@@ -182,15 +183,15 @@ def register_business():
         if register_updates:
             pass
             # register_updates = 1
-        
+
         new_user = User(
             first_name=register_fname,
             last_name=register_lname,
             user_email=register_email,
-            user_pword=generate_password_hash(register_pwd,method='sha256'),
+            user_pword=generate_password_hash(register_pwd, method='sha256'),
             user_updates=register_updates,
-            businessAccount = businessAccount,
-            businessName = businessName,
+            businessAccount=businessAccount,
+            businessName=businessName,
             businessPlan=default_business_plan
         )
 
@@ -214,10 +215,10 @@ def register_business():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main_view.index',page_num=1))
+    return redirect(url_for('main_view.index', page_num=1))
 
 
-@auth_login_view.route('/profile/', methods=['GET','POST'])
+@auth_login_view.route('/profile/', methods=['GET', 'POST'])
 @login_required
 def profile():
     accountType = current_user.businessAccount
@@ -230,9 +231,9 @@ def profile():
 
     # Nyupal Contact
     nyupalContact = {
-        'businessName':"Nyupal",
-        "businessEmail":"support@nyupal.com",
-        "businessPhone":"+254712345678",
+        'businessName': "Nyupal",
+        "businessEmail": "support@nyupal.com",
+        "businessPhone": "+254712345678",
     }
 
     if request.method == 'POST':
@@ -247,15 +248,17 @@ def profile():
 
         # * INPUT VALIDATION
         error = ""
-        if profileFirst == "" or profileLast == "" or profileEmail == "" or profilePhone == "" :
+        if profileFirst == "" or profileLast == "" or profileEmail == "" or profilePhone == "":
             error = "Please fill in all the Required Fields."
             flash(
                 f"{error}")
             return redirect(url_for('auth_login_view.profile'))
 
         #! IMAGE PROCESSING, MORE OR LESS
-        profile_image=''
+        profile_image = ''
         profile_image_name = None
+        cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
+                          api_secret=os.getenv('API_SECRET'))
         if request.files != None:
             # Main Image
             editProfilePic = request.files['profilePic']
@@ -265,9 +268,11 @@ def profile():
                 if allowed_image(editProfilePic.filename):
                     # print(os.getcwd())
                     # * 3. Ensure the file itself isn't dangerous.
-                    editProfilePic_filename = secure_filename(editProfilePic.filename)
+                    editProfilePic_filename = secure_filename(
+                        editProfilePic.filename)
                     # image = property/{property_type}/random_str_timestamp.extension
                     profile_image_name = f'{secrets.token_hex(2)}{secrets.token_hex(3)}_{str(time.time()).split(".")[0]}.{editProfilePic_filename.split(".")[-1].lower()}'
+                    print(f"profile_image_name: {profile_image_name}")
                     profile_image = f'userManagement/users/{profile_image_name}'
                     # print(editProfilePic_filename)
                     #! Restrict Filesize
@@ -275,6 +280,12 @@ def profile():
                     # Save the image
                     editProfilePic.save(os.path.join(
                         create_app().config["IMAGE_UPLOADS_USER"], profile_image))
+                        # Save(upload) the Image to Cloudinary
+                    cloudinary_imgFilename = os.path.join(create_app().config["IMAGE_UPLOADS_USER"],profile_image)
+                    # print(cloudinary_imgFilename)
+                    upload_result = cloudinary.uploader.upload(cloudinary_imgFilename)
+                    print(f"upload_result: {upload_result['secure_url']}")
+                    profile_image_name = upload_result['secure_url']
 
                 else:
                     error_message = "Please upload an image with accepted extension (.png, .jpeg, .jpg)"
@@ -291,7 +302,7 @@ def profile():
             user.user_phone = profilePhone
             user.businessName = profileBusinessName if profileBusinessName else None
             user.user_pic = profile_image_name if profile_image_name else user.user_pic
-            
+
             # Write changes to DB
             db.session.commit()
 
@@ -302,36 +313,34 @@ def profile():
             print(f"Error: {e}")
             return redirect(url_for('auth_login_view.profile'))
 
-
     return render_template("userManagement/profile.html",
                            plan=plan,
                            owner=nyupalContact)
 
 
-
 def send_reset_email(user):
-	token = user.get_reset_token()
-	msg = Message('Nyupal Password Reset',  # Title for the E-mail
-					sender='noreply@nyupal.com',
-					recipients=[user.user_email])
-	msg.body = f''' To reset your password, visit the following link:
+    token = user.get_reset_token()
+    msg = Message('Nyupal Password Reset',  # Title for the E-mail
+                  sender='noreply@nyupal.com',
+                  recipients=[user.user_email])
+    msg.body = f''' To reset your password, visit the following link:
 {url_for('auth_login_view.reset_token', token=token, _external=True)}
 
 If you did not make this request, simply ignore this email and no changes will be made.
 Please DO NOT REPLY to this email.
 '''
-	mail.send(msg)
+    mail.send(msg)
 
 
-@auth_login_view.route("/reset_password/", methods=['GET','POST'])
+@auth_login_view.route("/reset_password/", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index',page_num=1))
-    
+        return redirect(url_for('main_view.index', page_num=1))
+
     if request.method == 'POST':
         reset_form = request.form
         reset_email = reset_form['resetEmail']
-	
+
         user = User.query.filter_by(user_email=reset_email).first()
         if user:
             #! Bypassing email for now
@@ -342,15 +351,14 @@ def reset_request():
         else:
             flash("That Email does not exist. Check the spelling & Try Again.")
             return redirect(url_for('auth_login_view.reset_request'))
-        
 
     return render_template('userManagement/reset_request.html')
 
 
-@auth_login_view.route("/reset_password/<token>", methods=['GET','POST'])
+@auth_login_view.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for('main_view.index',page_num=1))
+        return redirect(url_for('main_view.index', page_num=1))
 
     user = User.verify_reset_token(token)
     if user is None:
@@ -362,31 +370,30 @@ def reset_token(token):
         reset_pwd = reset_form['resetPassword']
         reset_confirmPwd = reset_form['resetConfirmPassword']
 
-        #* INPUT VALIDATION
-        error=""
+        # * INPUT VALIDATION
+        error = ""
         if reset_pwd == "" or reset_confirmPwd == "":
-            error="Please fill in all the fields."
+            error = "Please fill in all the fields."
             flash(
                 f"{error}")
-            return redirect(url_for('auth_login_view.reset_token',token=token))
+            return redirect(url_for('auth_login_view.reset_token', token=token))
 
         # Ensure Passwords Match
         if reset_pwd != reset_confirmPwd:
             error = "The passwords do not match. Please Try Again."
             flash(
                 f"{error}")
-            return redirect(url_for('auth_login_view.reset_token',token=token))
-        
+            return redirect(url_for('auth_login_view.reset_token', token=token))
+
         # Generate hash from the pword and update db
-        hashed_pwd = generate_password_hash(reset_pwd,method='sha256')
+        hashed_pwd = generate_password_hash(reset_pwd, method='sha256')
         user.user_pword = hashed_pwd
         db.session.commit()
 
         flash("Your Password Has Been Updated! You are now able to Log In")
         return redirect(url_for('auth_login_view.login'))
-    
-    return render_template('userManagement/reset_pword.html')
 
+    return render_template('userManagement/reset_pword.html')
 
 
 def allowed_image(filename):

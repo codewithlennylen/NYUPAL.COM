@@ -11,7 +11,7 @@
     <div class="row g-0">
       <div class="col-md-4">
         <img
-          src="{{ url_for('auth_login_view.static', filename='userManagement/users/'+current_user.user_pic) }}"
+          src="{{ current_user.user_pic }}"
           class="card-img-top rounded-circle img-thumbnail"
           alt="{{ current_user.first_name }}'s Image"
         />

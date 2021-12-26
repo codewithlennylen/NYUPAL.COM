@@ -53,7 +53,7 @@
         {# property.property_images #}
         <div class="my-container">
           <img
-            src="{{ url_for('static', filename=propertyImages[loop.index0]) }}"
+            src="{{ propertyImages[loop.index0] }}"
             class="card-img-top"
             alt="Property Image"
           />

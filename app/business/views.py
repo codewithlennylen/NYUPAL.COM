@@ -9,6 +9,9 @@ from app import db, mail, create_app
 import time
 import os
 import secrets
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Create Blueprint
 business_admin_view = Blueprint('business_admin_view',
@@ -72,6 +75,8 @@ def add_property():
             return redirect(url_for('business_admin_view.add_property'))
 
         #! IMAGE PROCESSING, MORE OR LESS
+        cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
+                          api_secret=os.getenv('API_SECRET'))
         if request.files != None:
             # Main Image
             propertyProfilePic = request.files['addPropertyProfilePic']
@@ -108,6 +113,11 @@ def add_property():
                         # Save the image
                         img.save(os.path.join(
                             create_app().config["IMAGE_UPLOADS_PROPERTY"], property_images))
+                        cloudinary_imgFilename = os.path.join(create_app().config["IMAGE_UPLOADS_PROPERTY"],property_images)
+                        # print(cloudinary_imgFilename)
+                        upload_result = cloudinary.uploader.upload(cloudinary_imgFilename)
+                        print(f"upload_result: {upload_result['secure_url']}")
+                        property_images = upload_result['secure_url']
 
                     else:
                         error_message = "Please upload an image with accepted extension (.png, .jpeg, .jpg)"
@@ -209,6 +219,8 @@ def view_property(property_id):
         # * Deal with the Images
         # ? Pardon me for the somewhat terrible implementation of the image processing logic below. Especially for
         # ? the terribly confusing variable names
+        cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
+                          api_secret=os.getenv('API_SECRET'))
         if request.files != None:
             # Main Image
             propertyProfileImage = request.files['editPropertyProfilePic']
@@ -245,6 +257,11 @@ def view_property(property_id):
                         # Save the image
                         img.save(os.path.join(
                             create_app().config["IMAGE_UPLOADS_PROPERTY"], property_images))
+                        cloudinary_imgFilename = os.path.join(create_app().config["IMAGE_UPLOADS_PROPERTY"],property_images)
+                        # print(cloudinary_imgFilename)
+                        upload_result = cloudinary.uploader.upload(cloudinary_imgFilename)
+                        print(f"upload_result: {upload_result['secure_url']}")
+                        property_images = upload_result['secure_url']
 
                     else:
                         error_message = "Please upload an image with accepted extension (.png, .jpeg, .jpg)"

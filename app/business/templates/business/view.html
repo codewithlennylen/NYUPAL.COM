@@ -2,6 +2,7 @@
 
 <div class="container-fluid">
   <form action="{{ url_for('business_admin_view.view_property', property_id=property.id) }}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
       <!-- Property Images -->
       <div class="col">
@@ -29,7 +30,7 @@
                 class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}"
               >
                 <img
-                  src="{{ url_for('static', filename=image) }}"
+                  src="{{ image }}"
                   class="d-block w-100"
                   alt="..."
                 />
