@@ -50,11 +50,11 @@ def rating_clicked():
     property_id = rating_object.get('string_id').split('_')[-1]
     property_rating = rating_object.get('rating')
 
-    # print(property_id,
-    #       property_rating)
+    print(property_id,
+          property_rating)
 
     new_rating = Rating(
-        user_id=current_user.id,
+        user_id=int(current_user.id),
         property_id=int(property_id),
         rating=property_rating
     )

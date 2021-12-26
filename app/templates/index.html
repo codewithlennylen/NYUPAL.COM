@@ -231,7 +231,8 @@
       body: JSON.stringify(ratingObject),
       cache:"no-cache",
       headers: new Headers({
-        "content-type": "application/json"
+        "content-type": "application/json",
+        "X-CSRF-TOKEN":"{{ csrf_token() }}",
       })
     })
     // What to do with the server's response. <After data has been processed by the server>
