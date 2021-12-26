@@ -1,5 +1,6 @@
+import datetime
 import app
-from app import db
+from app import db, create_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 
@@ -18,7 +19,7 @@ class User(db.Model, UserMixin):
     user_pword = db.Column(db.String, nullable = False)
     # Optional > Builds the User's Profile
     user_updates = db.Column(db.Integer, nullable = True, default=0) # newsletter subscriptions
-    user_pic = db.Column(db.String, nullable = True, default='default.png') # image dir
+    user_pic = db.Column(db.String, nullable = True, default=create_app().config["DEFAULT_IMAGE"]) # image dir
     user_phone = db.Column(db.String, nullable = True) # phone number > OTP?
     
     # Used to determine whether user can list property. > 'Admin' Emulation
