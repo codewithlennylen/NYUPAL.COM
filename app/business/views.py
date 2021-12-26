@@ -171,6 +171,11 @@ def add_property():
 
         print(new_property.property_name,new_property.property_price,new_property.property_images,new_property.property_owner,)
         
+        # user_object
+        user = User.query.filter_by(id=current_user.id).first()
+        print(f"User Object: {user.first_name}")
+        user.user_phone = newPhoneNumber
+
         try:
             # Try adding property object to database.
             db.session.add(new_property)
