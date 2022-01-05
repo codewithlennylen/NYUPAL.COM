@@ -12,6 +12,15 @@ mail = Mail()
 csrf = CSRFProtect()
 talisman = Talisman()
 
+csp = {
+    'default-src': '\'self\'',
+    'img-src': '*',
+    'media-src': [
+        'res.cloudinary.com',
+    ],
+    'script-src': '*'
+}
+
 # Define app object > Application Factory Pattern.
 def create_app():
     # Instantiate Flask Object
@@ -24,7 +33,7 @@ def create_app():
     migrate.init_app(app, db) # Enables Database-Migrations
     mail.init_app(app)
     csrf.init_app(app)
-    talisman.init_app(app)
+    talisman.init_app(app, content_security_policy=csp)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth_login_view.login'
