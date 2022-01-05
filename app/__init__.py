@@ -4,22 +4,22 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from flask_talisman import Talisman
+# from flask_talisman import Talisman
 
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
 csrf = CSRFProtect()
-talisman = Talisman()
+# talisman = Talisman()
 
-csp = {
-    'default-src': '\'self\'',
-    'img-src': '*',
-    'media-src': [
-        'res.cloudinary.com',
-    ],
-    'script-src': '*'
-}
+# csp = {
+#     'default-src': '\'self\'',
+#     'img-src': '*',
+#     'media-src': [
+#         'res.cloudinary.com',
+#     ],
+#     'script-src': '*'
+# }
 
 # Define app object > Application Factory Pattern.
 def create_app():
@@ -33,7 +33,7 @@ def create_app():
     migrate.init_app(app, db) # Enables Database-Migrations
     mail.init_app(app)
     csrf.init_app(app)
-    talisman.init_app(app, content_security_policy=csp)
+    # talisman.init_app(app, content_security_policy=csp)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth_login_view.login'
