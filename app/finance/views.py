@@ -38,14 +38,17 @@ def checkout(plan):
     # if current_user.businessAccount != 1:
     #     return redirect(url_for('main_view.index'))
 
-    if plan == "standard":
-        planDetails = Plans.query.filter_by(plan_name="Standard Business Account").first()
+    if int(plan) == 1 or int(plan) == 2 or int(plan) == 3:
+        planDetails = Plans.query.filter_by(id=int(plan)).first()
 
-    #! Check for token to ensure user didn't skip document upload step.
-    elif plan == "verified":
-        planDetails = Plans.query.filter_by(plan_name="Verified Business Account").first()
-    elif plan == "premium":
-        planDetails = Plans.query.filter_by(plan_name="Premium Business Account").first()
+    # if plan == "standard":
+    #     planDetails = Plans.query.filter_by(plan_name="Standard Business Account").first()
+
+    # #! Check for token to ensure user didn't skip document upload step.
+    # elif plan == "verified":
+    #     planDetails = Plans.query.filter_by(plan_name="Verified Business Account").first()
+    # elif plan == "premium":
+    #     planDetails = Plans.query.filter_by(plan_name="Premium Business Account").first()
     else:
         # Invalid URL
         return redirect(url_for('finance_view.pricing'))
