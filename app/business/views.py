@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from werkzeug.utils import secure_filename
-from app.models import User, Property, PropertyDocuments
+from app.models import Plans, User, Property, PropertyDocuments
 from app import db, mail, create_app
 import time
 import os
@@ -29,6 +29,29 @@ def property_dashboard():
 
     # list of properties listed / owned by the user.
     propertys = current_user.property
+
+    # business plan
+    userPlan = Plans.query.filter_by(id=current_user.businessPlan).first()
+
+    #? Verification Status and Text => DB.Json Column?
+    verification_dict = {
+        0:('btn-warning','verification pending','We are currently working on getting your property verified.'),
+        1:('btn-success','verified','Your property has been successfully verified!'),
+        2:('btn-danger','verification failed','Your property does not meet requirements for verification. Contact us for more info.'),
+        3:('btn-danger','verification flagged','Your property does not meet requirements for verification. Contact us for more info.'),
+    }
+
+    # Property_PropertyDocuments
+    property_verification_status = {}
+    verification_prompt = 4
+    for p in propertys:
+        docs = PropertyDocuments.query.filter_by(property_id=p.id).first()
+        if docs:
+            property_verification_status[p] = docs.verified
+        else:
+            #* verification_prompt is an arbitrary flag that'll be used to dynamically alter the UI
+            property_verification_status[p] = verification_prompt
+
     # Get the images
     propertyImages = []
     for prop in propertys:
@@ -36,11 +59,13 @@ def property_dashboard():
         profilePic = propImages[0]
         propertyImages.append(profilePic)
 
-    print(propertyImages)
-
     return render_template("business/dashboard.html",
                            propertys=propertys,
-                           propertyImages=propertyImages)
+                           propertyImages=propertyImages,
+                           userPlan=userPlan,
+                           verification_dict=verification_dict,
+                           property_verification_status=property_verification_status,
+                           verification_prompt=verification_prompt)
 
 
 @business_admin_view.route('/add/', methods=['GET', 'POST'])

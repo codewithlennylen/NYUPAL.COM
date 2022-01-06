@@ -5,7 +5,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 
 
-#? additionalContactInfo vs businessName
+# additionalContactInfo vs businessName
 # businessName supersedes additionalContactInfo. 
 # All is well
 
@@ -124,8 +124,10 @@ class PropertyDocuments(db.Model):
     title_deed = db.Column(db.String(100), nullable=False)
     national_id = db.Column(db.String(100), nullable=False)
     tax_receipt = db.Column(db.String(100), nullable=False)
-    # 0 - ongoing, 1 - passed, 3 - rejected, 4 - flagged
+    # 0 - ongoing, 1 - passed, 2 - rejected, 3 - flagged
     verified = db.Column(db.Integer, nullable=True, default = 0)
+    # reason / explanation of verification status
+    status_text = db.Column(db.String(200), nullable=True)
 
     timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
 

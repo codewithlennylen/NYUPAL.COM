@@ -24,7 +24,7 @@
   </header>
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for property in propertys %}
+    {% for property in property_verification_status %}
     <div class="col">
       <div class="card h-100 border-dark">
         {# property.property_images #}
@@ -34,7 +34,28 @@
           alt="..."
         />
         <div class="card-body">
-          <h4 class="card-title">{{ property.property_name }}</h4>
+          {% if current_user.businessPlan >= 2 %}
+          {% if property_verification_status[property] == verification_prompt %}
+          <div class="my-verification-header">
+            <h4 class="card-title">{{ property.property_name }}</h4>
+            <a href="{{ url_for('business_admin_view.docs_upload',plan=userPlan.id) }}" class="btn btn-primary btn-sm ml-auto">Verify Property</a>
+          </div>
+          {% else %}
+            <div class="my-verification-header">
+              <h4 class="card-title">{{ property.property_name }}</h4>
+              <a href="#" class="btn {{ verification_dict[property_verification_status[property]][0] }} btn-sm ml-auto" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ verification_dict[property_verification_status[property]][2] }}">{{ verification_dict[property_verification_status[property]][1] }}</a>
+            </div>
+          {% endif %}
+            
+          {% else %}
+            <div class="my-verification-header">
+              <h4 class="card-title">{{ property.property_name }}</h4>
+              <a href="{{ url_for('business_admin_view.docs_upload',plan=userPlan.id) }}" class="btn btn-primary btn-sm ml-auto">Verify Property</a>
+            </div>
+          
+          {% endif %}
+
+
           <p class="card-text"><b>Type:</b> {{ property.property_type }}</p>
           <p class="card-text">
             <b>Price Range:</b> {{ property.property_price }}
