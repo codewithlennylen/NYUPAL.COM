@@ -5,37 +5,36 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 
 
-# additionalContactInfo vs businessName
-# businessName supersedes additionalContactInfo. 
-# All is well
-
 class User(db.Model, UserMixin):
-    __tablename__ = 'user' # Explicit is better than implicit.
-  
-    id = db.Column(db.Integer, primary_key = True) # user's default id
-    first_name = db.Column(db.String(50), nullable=False) # Lenny
-    last_name = db.Column(db.String(50), nullable=False) # Ng'ang'a
-    user_email = db.Column(db.String, nullable = False)
-    user_pword = db.Column(db.String, nullable = False)
-    # Optional > Builds the User's Profile
-    user_updates = db.Column(db.Integer, nullable = True, default=0) # newsletter subscriptions
-    user_pic = db.Column(db.String, nullable = True, default="https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/default_pp4iup.png") # image dir
-    user_phone = db.Column(db.String, nullable = True) # phone number > OTP?
-    
-    # Used to determine whether user can list property. > 'Admin' Emulation
-    businessAccount = db.Column(db.Integer, nullable = True, default=0)
-    businessPlan = db.Column(db.Integer, db.ForeignKey('plans.id') ,nullable=True)
-    # This will be displayed on the Contact Card on the more_info page of a property
-    businessName = db.Column(db.String(150), nullable = True)
-    
-    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
+    __tablename__ = 'user'  # Explicit is better than implicit.
 
+    id = db.Column(db.Integer, primary_key=True)  # user's default id
+    first_name = db.Column(db.String(50), nullable=False)  # Lenny
+    last_name = db.Column(db.String(50), nullable=False)  # Ng'ang'a
+    user_email = db.Column(db.String, nullable=False)
+    user_pword = db.Column(db.String, nullable=False)
+    # Optional > Builds the User's Profile
+    # newsletter subscriptions
+    user_updates = db.Column(db.Integer, nullable=True, default=0)
+    user_pic = db.Column(db.String, nullable=True,
+                         default="https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/default_pp4iup.png")  # image dir
+    user_phone = db.Column(db.String, nullable=True)  # phone number > OTP?
+
+    # Used to determine whether user can list property. > 'Admin' Emulation
+    businessAccount = db.Column(db.Integer, nullable=True, default=0)
+    businessPlan = db.Column(
+        db.Integer, db.ForeignKey('plans.id'), nullable=True)
+    # This will be displayed on the Contact Card on the more_info page of a property
+    businessName = db.Column(db.String(150), nullable=True)
+
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=True)  # Auto-Generated During Input
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.create_app().config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id' : self.id}).decode('utf-8')
+        return s.dumps({'user_id': self.id}).decode('utf-8')
 
-    @staticmethod # Because we didn't use self in the parameters
+    @staticmethod  # Because we didn't use self in the parameters
     def verify_reset_token(token):
         s = Serializer(app.create_app().config['SECRET_KEY'])
         try:
@@ -49,116 +48,227 @@ class User(db.Model, UserMixin):
     # Property_Owned / In_Charge
     property = db.relationship(
         'Property',
-        foreign_keys = 'Property.property_owner',
-        backref = 'owner',
-        lazy = True
+        foreign_keys='Property.property_owner',
+        backref='owner',
+        lazy=True
     )
 
     # user's star-rating.
     ratings = db.relationship(
         'Rating',
-        foreign_keys = 'Rating.user_id',
-        backref = 'userRating',
-        lazy = True
+        foreign_keys='Rating.user_id',
+        backref='userRating',
+        lazy=True
     )
 
-    # user's star-rating.
+    # user's property_documents
     property_documents = db.relationship(
         'PropertyDocuments',
-        foreign_keys = 'PropertyDocuments.user_id',
-        backref = 'userPropertyDocuments',
-        lazy = True
+        foreign_keys='PropertyDocuments.user_id',
+        backref='userPropertyDocuments',
+        lazy=True
     )
+
+    # user's subscription
+    subscriptions = db.relationship(
+        'Subscription',
+        foreign_keys='Subscription.user_id',
+        backref='userSubscription',
+        lazy=True
+    )
+
+    # user's payment
+    payments = db.relationship(
+        'Payment',
+        foreign_keys='Payment.user_id',
+        backref='userPayment',
+        lazy=True
+    )
+
+
+# Plans entail the various pricing models available
+class Plans(db.Model):
+    __tablename__ = 'plans'  # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+    plan_name = db.Column(db.String(100), nullable=False)
+    plan_price = db.Column(db.Integer, nullable=False)
+
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=True)  # Auto-Generated During Input
+
+    # RELATIONSHIPS
+    # accounts / users tied to a particular plan.
+    accounts = db.relationship(
+        'User',
+        foreign_keys='User.businessPlan',
+        backref='businessOwner',
+        lazy=True
+    )
+
+    # user's subscription
+    subscriptions = db.relationship(
+        'Subscription',
+        foreign_keys='Subscription.plan_id',
+        backref='planSubscription',
+        lazy=True
+    )
+
+    # payments tied to this plan
+    # * I believe this will be a one-to-many rship
+    payments = db.relationship(
+        'Payment',
+        foreign_keys='Payment.plan_id',
+        backref='planPayment',
+        lazy=True
+    )
+
+
+#! Expires after 30 days
+class Subscription(db.Model):
+    __tablename__ = 'subscription'  # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=False)
+
+    start_timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=False)  # Auto-Generated During Input
+    # Auto-Generated by Timer or sth
+    end_timetamp = db.Column(db.String(50), nullable=False)
+
+    # RELATIONSHIPS
+    # *
+    payment = db.relationship(
+        'Payment',
+        foreign_keys='payment.subscription_id',
+        backref='subscriptionDetails',
+        lazy=True
+    )
+
+
+# * Specific to Payment Preprocessor
+class PaymentGateway(db.Model):
+    __tablename__ = 'payment_gateway'  # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+    # * M-Pesa transaction ID
+    transaction_id = db.Column(db.String(100), nullable=False)
+    # ? Paybill | Buy Goods | STK Push >> PayPal | Stripe
+    # * M-Pesa related (STK Push Results)
+    # MerchantRequestID
+    # ResponseDescription
+    # ResponseCode
+    # CustomerMessage
+    # ? Amount?
+
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=False)  # Auto-Generated During Input
+
+    # RELATIONSHIPS
+    # ? Should be a one-to-one relationship
+    payment = db.relationship(
+        'Payment',
+        foreign_keys='Payment.payment_gateway_id',
+        backref='paymentGatewayDetails',
+        lazy=True
+    )
+
+
+# Finalize Payment > after transaction code has been confirmed
+class Payment(db.Model):
+    __tablename__ = 'payment'  # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'), nullable=False)
+    subscription_id = db.Column(db.Integer, db.ForeignKey(
+        'subscription.id'), nullable=False)
+    payment_gateway_id = db.Column(db.Integer, db.ForeignKey(
+        'payment_gateway.id'), nullable=False)
+
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=False)  # Auto-Generated During Input
 
 
 # Property includes land and buildings
 class Property(db.Model):
-    __tablename__ = 'property' # Explicit is better than implicit.
- 
-    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
+    __tablename__ = 'property'  # Explicit is better than implicit.
+
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
     property_name = db.Column(db.String(100), nullable=False)
     property_description = db.Column(db.String, nullable=False)
     # I could use 2 variables (integer-columns), lower limit & upper limit to simplify filter by price
-    property_price = db.Column(db.String(100), nullable=True) # To enable range 50-60K
+    # To enable range 50-60K
+    property_price = db.Column(db.String(100), nullable=True)
     property_type = db.Column(db.String, nullable=True)
     property_location = db.Column(db.String, nullable=True)
-    #* I am thinking of adding land as a type / category
-    # property_is_land = db.Column(db.String, nullable=True) 
-    property_images = db.Column(db.String, nullable=True) # List of | separated img-dir names
-    #* I plan to use PostgreSQL JSON column for better structure.
+    # * I am thinking of adding land as a type / category
+    # property_is_land = db.Column(db.String, nullable=True)
+    # List of | separated img-dir names
+    property_images = db.Column(db.String, nullable=True)
+    # * I plan to use PostgreSQL JSON column for better structure.
     # But I could work with | separated strings representing different features,
     # Then the template(moreInfoPage) could loop through and display the features
-    property_features = db.Column(db.String, nullable=True) # List of | separated img-dir names
+    # List of | separated img-dir names
+    property_features = db.Column(db.String, nullable=True)
 
     # User.id -> Relationship. Who owns the property?
-    property_owner = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
+    property_owner = db.Column(
+        db.Integer, db.ForeignKey('user.id'), nullable=False)
     # Additional Contact Information.
-    additionalContactInfo = db.Column(db.String, nullable=True) # e.g. Manager, ABC Property Limited
-    
+    # e.g. Manager, ABC Property Limited
+    additionalContactInfo = db.Column(db.String, nullable=True)
 
-    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=True)  # Auto-Generated During Input
     # RELATIONSHIPS
     # star-rating tied to property.
     ratings = db.relationship(
         'Rating',
-        foreign_keys = 'Rating.property_id',
-        backref = 'buildingRating',
-        lazy = True
+        foreign_keys='Rating.property_id',
+        backref='buildingRating',
+        lazy=True
     )
 
     # Documents tied to property.
     documents = db.relationship(
         'PropertyDocuments',
-        foreign_keys = 'PropertyDocuments.property_id',
-        backref = 'buildingPropertyDocuments',
-        lazy = True
+        foreign_keys='PropertyDocuments.property_id',
+        backref='buildingPropertyDocuments',
+        lazy=True
     )
 
 
 class PropertyDocuments(db.Model):
-    __tablename__ = 'property_docs' # Explicit is better than implicit.
+    __tablename__ = 'property_docs'  # Explicit is better than implicit.
 
-    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey(
+        'property.id'), nullable=False)
     title_deed = db.Column(db.String(100), nullable=False)
     national_id = db.Column(db.String(100), nullable=False)
     tax_receipt = db.Column(db.String(100), nullable=False)
     # 0 - ongoing, 1 - passed, 2 - rejected, 3 - flagged
-    verified = db.Column(db.Integer, nullable=True, default = 0)
+    verified = db.Column(db.Integer, nullable=True, default=0)
     # reason / explanation of verification status
     status_text = db.Column(db.String(200), nullable=True)
 
-    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
-
-
-# Plans entail the various pricing models available
-class Plans(db.Model):
-    __tablename__ = 'plans' # Explicit is better than implicit.
-
-    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
-    plan_name = db.Column(db.String(100), nullable=False)
-    plan_price = db.Column(db.Integer, nullable=False)
-
-    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
- 
-    # RELATIONSHIPS
-    # accounts / users tied to a particular plan.
-    accounts = db.relationship(
-        'User',
-        foreign_keys = 'User.businessPlan',
-        backref = 'businessOwner',
-        lazy = True
-    )
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=True)  # Auto-Generated During Input
 
 
 class Rating(db.Model):
-    __tablename__ = 'rating' # Explicit is better than implicit.
+    __tablename__ = 'rating'  # Explicit is better than implicit.
 
-    id = db.Column(db.Integer, primary_key = True) # Auto-generated default id
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id') ,nullable=False)
+    id = db.Column(db.Integer, primary_key=True)  # Auto-generated default id
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     #! Property_id to Integer type -> enumeration vulnerability if integers are used
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id') ,nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey(
+        'property.id'), nullable=False)
     rating = db.Column(db.String(10), nullable=False)
 
-    timetamp = db.Column(db.String(50), default=str(datetime.datetime.now()), nullable = True) # Auto-Generated During Input
+    timetamp = db.Column(db.String(50), default=str(
+        datetime.datetime.now()), nullable=True)  # Auto-Generated During Input
