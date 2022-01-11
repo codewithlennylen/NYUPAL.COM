@@ -442,7 +442,7 @@ def docs_upload(plan):
                 return redirect(url_for('finance_view.checkout',plan=sub_plan))
             else:
                 flash(
-                    f"Your Documents have been Uploaded Successfully.")
+                    f"Your Documents have been Uploaded Successfully. Verification Takes 3 to 5 Business Days.")
                 return redirect(url_for('business_admin_view.property_dashboard'))
         except Exception as e:
             # Log this SERIOUS issue > Report to Developer
