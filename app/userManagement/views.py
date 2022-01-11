@@ -1,14 +1,15 @@
 import os
 import secrets
 import time
-from flask import Blueprint, render_template, url_for, request, flash, redirect
+from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from werkzeug.utils import secure_filename
-from app.models import User, Plans
 from app import db, mail, create_app
+from app.models import User, Plans
+from app.subscription_manager import subscription_manager
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -46,6 +47,12 @@ def login():
             if check_password_hash(user.user_pword, login_pwd):
                 # flash("Login Successful.")
                 login_user(user, remember=login_remember)
+                #* If a user is a property owner, check subscription status.
+                if user.businessAccount:
+                    sub_plan = user.businessPlan
+                    if not subscription_manager.validate:
+                        flash(Markup(f"Your Subscription has Expired. Please <b><a href='{url_for('finance_view.checkout',plan=sub_plan)}'>update subscription.</a></b>"))
+                    
                 return redirect(url_for('main_view.index', page_num=1))
             else:
                 error = 'Login Failed. Please try again.'
@@ -133,6 +140,7 @@ def register_business():
     """Registers a business account. A business account can list and thus sell property
     on the platform
     """
+
     default_business_plan = int(Plans.query.filter_by(
         plan_name='Standard Business Account').first().id)
     print(f"default_business_plan: {default_business_plan}")
@@ -312,6 +320,13 @@ def profile():
             flash("An Error Ocurred: Changes Not Saved!")
             print(f"Error: {e}")
             return redirect(url_for('auth_login_view.profile'))
+
+    #* If a user is a property owner, check subscription status.
+    if current_user.businessAccount:
+        sub_plan = current_user.businessPlan
+        if not subscription_manager.validate:
+            flash(Markup(f"Your Subscription has Expired. Please <b><a href='{url_for('finance_view.checkout',plan=sub_plan)}'>update subscription.</a></b>"))
+        
 
     return render_template("userManagement/profile.html",
                            plan=plan,

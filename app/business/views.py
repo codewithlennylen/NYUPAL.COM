@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, url_for, request, flash, redirect
+from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from werkzeug.utils import secure_filename
 from app.models import Plans, User, Property, PropertyDocuments
+from app.subscription_manager import subscription_manager
 from app import db, mail, create_app
 import time
 import os
@@ -58,6 +59,12 @@ def property_dashboard():
         propImages = prop.property_images.split('|')
         profilePic = propImages[0]
         propertyImages.append(profilePic)
+
+    #* Check whether subscription has expired.
+    sub_plan = current_user.businessPlan
+    if not subscription_manager.validate:
+        flash(Markup(f"Your Subscription has Expired. Please <b><a href='{url_for('finance_view.checkout',plan=sub_plan)}'>update subscription.</a></b>"))
+    
 
     return render_template("business/dashboard.html",
                            propertys=propertys,
@@ -428,9 +435,15 @@ def docs_upload(plan):
             db.session.add(new_documents)
             db.session.commit()
 
-            flash(
-                f"Your Documents have been Uploaded Successfully.")
-            return redirect(url_for('finance_view.checkout',plan=plan))
+            #* Check whether subscription has expired.
+            sub_plan = current_user.businessPlan
+            if not subscription_manager.validate:
+                flash(Markup(f"Verification won't start until Subscription is updated! Please proceed below."))
+                return redirect(url_for('finance_view.checkout',plan=sub_plan))
+            else:
+                flash(
+                    f"Your Documents have been Uploaded Successfully.")
+                return redirect(url_for('business_admin_view.property_dashboard'))
         except Exception as e:
             # Log this SERIOUS issue > Report to Developer
             error = e

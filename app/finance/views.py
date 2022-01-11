@@ -22,9 +22,11 @@ finance_view = Blueprint('finance_view',
 # EdgeCase: A regular user wants to checkout the prices for curiosity purposes?
 #// @login_required
 def pricing():
-    # Check if user is admin! -> Not necessary. Pricing is free for the public.
-    #// if current_user.businessAccount != 1:
-    #//     return redirect(url_for('main_view.index'))
+    """Displays the subscription plans that we offer for businesses (property owners)
+
+    Returns:
+        template: pricing_details.html page, supplied with plans from DB
+    """
 
     plans = Plans.query.order_by(Plans.plan_price).all()
 
@@ -38,8 +40,6 @@ def checkout(plan):
     print(f"plan: {plan}")
     # Check if user is admin!
     #? Consider a regular user that wants to upgrade to a business plan.
-    # if current_user.businessAccount != 1:
-    #     return redirect(url_for('main_view.index'))
 
     #! Check for token to ensure user didn't skip document upload step.
     if int(plan) == 1 or int(plan) == 2 or int(plan) == 3:
@@ -74,7 +74,7 @@ def checkout(plan):
             return redirect(url_for('finance_view.checkout', plan=plan))
         
         #! Confirm amount before proceeding. (amount_paid v. plan_price)
-        #? specific to PaymentGateway
+        #? specific to PaymentGateway -> via Callback URL
 
         #* Update Subscription
         # Subscription is valid for 30 days
