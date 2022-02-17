@@ -46,7 +46,8 @@ def property_dashboard():
     property_verification_status = {}
     verification_prompt = 4
     for p in propertys:
-        docs = PropertyDocuments.query.filter_by(property_id=p.id).first()
+        # docs = PropertyDocuments.query.filter_by(property_id=p.id).first()
+        docs = p.documents()
         if docs:
             property_verification_status[p] = docs.verified
         else:
@@ -60,7 +61,7 @@ def property_dashboard():
         profilePic = propImages[0]
         propertyImages.append(profilePic)
 
-    #* Check whether subscription has expired.
+    #! Check whether subscription has expired.
     sub_plan = current_user.businessPlan
     if not subscription_manager.validate:
         flash(Markup(f"Your Subscription has Expired. Please <b><a href='{url_for('finance_view.checkout',plan=sub_plan)}'>update subscription.</a></b>"))
@@ -368,7 +369,7 @@ def docs_upload(plan):
             print(error_message)
             return redirect(url_for('business_admin_view.docs_upload',plan=plan))
 
-
+        #! Should be uploaded to AWS S3 instead.
         if request.files != None:
             cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
                           api_secret=os.getenv('API_SECRET'))
@@ -436,6 +437,7 @@ def docs_upload(plan):
             db.session.commit()
 
             #* Check whether subscription has expired.
+            #! Pay per property implementation
             sub_plan = current_user.businessPlan
             if not subscription_manager.validate:
                 flash(Markup(f"Verification won't start until Subscription is updated! Please proceed below."))
