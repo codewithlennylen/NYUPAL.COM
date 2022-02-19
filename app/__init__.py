@@ -4,12 +4,17 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 # from flask_talisman import Talisman
+
+fix timestamp issue first.
 
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
 csrf = CSRFProtect()
+admin = Admin()
 # talisman = Talisman()
 
 # csp = {
@@ -38,6 +43,10 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth_login_view.login'
     login_manager.init_app(app)
+
+    admin.init_app(app)
+    from app.models import User
+    admin.add_view(ModelView(User, db.session))
 
 
     # Import and register Blueprints
