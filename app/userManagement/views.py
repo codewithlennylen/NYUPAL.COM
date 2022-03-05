@@ -361,10 +361,10 @@ def reset_request():
 
         user = User.query.filter_by(user_email=reset_email).first()
         if user:
-            #! Bypassing email for now
-            # token = user.get_reset_token()
-            # return redirect(url_for('auth_login_view.reset_token', token=token))
-            #? Sendgrid
+            # Bypassing email for now
+            #// token = user.get_reset_token()
+            #// return redirect(url_for('auth_login_view.reset_token', token=token))
+            #* Sendgrid
             send_reset_email(user)
             flash('An email has been sent with instructions to reset your password.')
         else:
