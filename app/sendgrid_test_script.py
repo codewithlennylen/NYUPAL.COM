@@ -9,10 +9,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env')) # When running the application.
 
 message = Mail(
-    from_email='codewithlennylen254@gmail.com',
-    to_emails='lennylen254@gmail.com',
+    from_email='codewithlennylen254@gmail.com', # works with sendgrid registered email address
+    to_emails=['lennylen254@gmail.com','lenny@lcsolutionskenya.com'],
     subject='Sending with Twilio SendGrid is Fun',
-    html_content='<strong>and easy to do anywhere, even with Python</strong>')
+    html_content='<strong>and easy to do anywhere, even with Python. In 2022!</strong>')
 try:
     sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
     response = sg.send(message)

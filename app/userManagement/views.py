@@ -6,6 +6,7 @@ from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
+from ..send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app import db, mail, create_app
 from app.models import User, Plans
@@ -335,16 +336,18 @@ def profile():
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Nyupal Password Reset',  # Title for the E-mail
-                  sender='noreply@nyupal.com',
-                  recipients=[user.user_email])
-    msg.body = f''' To reset your password, visit the following link:
-{url_for('auth_login_view.reset_token', token=token, _external=True)}
+    subject = 'Nyupal Password Reset'
+    recipients=[user.user_email]
+    body = f''' To reset your password, visit the following link:
+                <br>
+                {url_for('auth_login_view.reset_token', token=token, _external=True)}
 
-If you did not make this request, simply ignore this email and no changes will be made.
-Please DO NOT REPLY to this email.
-'''
-    mail.send(msg)
+                <br>
+                <p>If you did not make this request, simply ignore this email and no changes will be made.</p>
+                <b>Please DO NOT REPLY to this email</b>.
+            '''
+
+    send_mail(recipients,subject,body)
 
 
 @auth_login_view.route("/reset_password/", methods=['GET', 'POST'])
@@ -359,10 +362,11 @@ def reset_request():
         user = User.query.filter_by(user_email=reset_email).first()
         if user:
             #! Bypassing email for now
-            # send_reset_email(user)
-            # flash('An email has been sent with instructions to reset your password.')
-            token = user.get_reset_token()
-            return redirect(url_for('auth_login_view.reset_token', token=token))
+            # token = user.get_reset_token()
+            # return redirect(url_for('auth_login_view.reset_token', token=token))
+            #? Sendgrid
+            send_reset_email(user)
+            flash('An email has been sent with instructions to reset your password.')
         else:
             flash("That Email does not exist. Check the spelling & Try Again.")
             return redirect(url_for('auth_login_view.reset_request'))
