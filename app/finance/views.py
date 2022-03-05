@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, url_for, request, flash, redirect
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_mail import Message
+from ..send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app.models import User, Property, Plans, PaymentGateway, Subscription, Payment
 from app import db, mail, create_app
@@ -120,6 +120,21 @@ def checkout(plan):
         #? Redirect to View-Property Page.
         flash("Congratulations! Your Account has been Upgraded.")
         flash("Use this Dashboard to manage Your Property.")
+        
+        subject = 'Nyupal Account Upgrade'
+        recipients=[current_user.user_email]
+        body = f''' Dear {current_user.first_name} {current_user.last_name},
+                    <br>
+                    <p> Your Account has been Successfully Upgraded!</p>
+                    <p>You can now enjoy more features and accelerate your growth!</p>
+                    
+                    <hr>
+                    <b>Please DO NOT REPLY to this email</b>.
+                '''
+
+        #* Send confirmation email
+        send_mail(recipients,subject,body)
+
         return redirect(url_for('business_admin_view.property_dashboard'))
 
 

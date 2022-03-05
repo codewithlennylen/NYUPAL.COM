@@ -5,7 +5,7 @@ from sendgrid.helpers.mail import Mail
 from ..config import SENDGRID_API_KEY, SENDGRID_DEFAULT_EMAIL
 
 
-def send_mail(recipients: list, subject: str, body_text: str):
+def send_mail(recipients: list, subject: str, body_text: str, sender: str = SENDGRID_DEFAULT_EMAIL):
     """Use this function to send email(s) to a number of recipients
 
     Args:
@@ -17,7 +17,7 @@ def send_mail(recipients: list, subject: str, body_text: str):
         bool: Email status. True = success
     """
     message = Mail(
-        from_email=SENDGRID_DEFAULT_EMAIL,  # works with sendgrid registered email address
+        from_email=sender,  # works with sendgrid registered email address
         to_emails=recipients,
         subject=subject,
         html_content=body_text

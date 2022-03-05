@@ -1,8 +1,10 @@
+
+#! Not sure why this view exists in the first place! Should it be for RMIS?
 from flask import Blueprint, render_template, url_for, request, flash, redirect
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_mail import Message
+from ..send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app.models import User, Property, Plans
 from app import db, mail, create_app
@@ -18,18 +20,22 @@ messenger_view = Blueprint('messenger_view',
 
 
 def send_email(owner,message):
-    msg = Message('Nyupal Message Alert',  # Title for the E-mail
-					sender=f'{current_user.user_email}',
-					recipients=[owner.user_email])
-    msg.body = f'''You have a new Message from a Prospective Client:
+    subject = 'Nyupal Message Alert'
+    recipients=[owner.user_email]
+    sender=f'{current_user.user_email}',
+    body = f'''
+                <p>You have a new Message from a Prospective Client:</p>
+                <br>
+                {message}
 
-{message}
+                <p>Nyupal 2021</p>
+            '''
 
-Nyupal 2021
-'''
-
-    mail.send(msg)
-    print("email sent")
+    send_mail(recipients, subject,body,sender)
+    if send_mail:
+        print("email sent ✔️")
+    else:
+        print("email failed ⚠️")
 
 
 

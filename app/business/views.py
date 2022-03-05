@@ -3,6 +3,7 @@ from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
+from ..send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app.models import Plans, User, Property, PropertyDocuments
 from app.subscription_manager import subscription_manager
@@ -215,6 +216,19 @@ def add_property():
 
             flash(
                 f"Your Property was Successfully Listed.")
+            subject = 'Nyupal Property Listing'
+            recipients=[current_user.user_email]
+            body = f''' Dear {current_user.first_name} {current_user.last_name},
+                        <br>
+                        <p> Your Property {newPropertyName} has been successfully enlisted on our platform.</p>
+                        
+                        <hr>
+                        <b>Please DO NOT REPLY to this email</b>.
+                    '''
+
+            #* Send confirmation email
+            send_mail(recipients,subject,body)
+
             return redirect(url_for('business_admin_view.property_dashboard'))
         except Exception as e:
             # Log this SERIOUS issue > Report to Developer
@@ -443,6 +457,19 @@ def docs_upload(plan):
             else:
                 flash(
                     f"Your Documents have been Uploaded Successfully. Verification Takes 3 to 5 Business Days.")
+                subject = 'Nyupal Property Verification'
+                recipients=[current_user.user_email]
+                body = f''' Dear {current_user.first_name} {current_user.last_name},
+                                <br>
+                                <p>We have received the documents regarding Your Property's verification.</p>
+                                <p>Verification takes 3 to 5 busines days. We will update you on the progress as necessary. </p>
+
+                                
+                                <hr>
+                                <b>Please DO NOT REPLY to this email</b>.
+                            '''
+
+                send_mail(recipients,subject,body)
                 return redirect(url_for('business_admin_view.property_dashboard'))
         except Exception as e:
             # Log this SERIOUS issue > Report to Developer
