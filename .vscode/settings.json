@@ -7,7 +7,7 @@
         "Nyupal",
         "propertys",
         "Radisson",
-        "RMIS"
+        "sqla"
     ],
     "python.pythonPath": "venv\\Scripts\\python.exe"
 }

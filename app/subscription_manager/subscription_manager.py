@@ -5,6 +5,7 @@ from datetime import date
 def validate(user_id):
     
     user = User.query.filter_by(id=user_id).first()
+    #! Chronological
     subscription = Subscription.query.filter_by(user_id=user.id).first()
 
     today = date.today()
