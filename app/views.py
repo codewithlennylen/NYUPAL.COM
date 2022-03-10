@@ -1,6 +1,5 @@
 
 from flask import (Blueprint,
-                   json,
                    request,
                    make_response,
                    jsonify,
