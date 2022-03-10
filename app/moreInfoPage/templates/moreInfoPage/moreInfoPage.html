@@ -32,11 +32,7 @@
             <div
               class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}"
             >
-              <img
-                src="{{ image }}"
-                class="d-block w-100"
-                alt="..."
-              />
+              <img src="{{ image }}" class="d-block w-100" alt="..." />
             </div>
             {% endfor %}
           </div>
@@ -259,58 +255,64 @@
               role="tabpanel"
               aria-labelledby="Phone-tab"
             >
-            <h3 class="text-center mt-3">{{ owner.user_phone }}</h3>
-          </div>
+              <h3 class="text-center mt-3">
+                <a href="tel:{{ owner.user_phone }}">{{ owner.user_phone }}</a>
+              </h3>
+            </div>
             <div
               class="tab-pane fade"
               id="Email"
               role="tabpanel"
               aria-labelledby="Email-tab"
             >
-            <form
-            action="{{ url_for('more_info_view.more_info', property_id=property.id) }}"
-            method="POST"
-          >
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label"
-                >Recipient:</label
+              <form
+                action="{{ url_for('more_info_view.more_info', property_id=property.id) }}"
+                method="POST"
               >
-              <input
-                type="text"
-                class="form-control"
-                id="recipient-name"
-                name="recipient_mail"
-                value="{{ owner.user_email}}"
-                disabled
-              />
+                <input
+                  type="hidden"
+                  name="csrf_token"
+                  value="{{ csrf_token() }}"
+                />
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label"
+                    >Recipient:</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="recipient-name"
+                    name="recipient_mail"
+                    value="{{ owner.user_email}}"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label"
+                    >Message:</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="message-text"
+                    rows="4"
+                    name="msgText"
+                  ></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Send message
+                  </button>
+                </div>
+              </form>
             </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">Message:</label>
-              <textarea
-                class="form-control"
-                id="message-text"
-                rows="4"
-                name="msgText"
-              ></textarea>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Send message
-              </button>
-            </div>
-          </form>
           </div>
-          </div>
-
-          
         </div>
       </div>
     </div>
