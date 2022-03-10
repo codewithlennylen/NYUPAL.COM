@@ -5,7 +5,8 @@ from flask import Blueprint, render_template, url_for, request, flash, redirect,
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from ..send_mail_sms import send_mail
+from app.send_mail_sms import send_mail
+from app.config import NYUPAL_SUPPORT_EMAIL
 from werkzeug.utils import secure_filename
 from app import db, mail, create_app
 from app.models import User, Plans
@@ -331,6 +332,43 @@ def profile():
     return render_template("userManagement/profile.html",
                            plan=plan,
                            owner=nyupalContact)
+
+
+@auth_login_view.route('/feedback/', methods=['POST'])
+@login_required
+def feedback():
+    
+    feedback_form = request.form
+    client_feedback = feedback_form['feedbackText'].strip()
+
+    if not client_feedback:
+        flash("You cannot send an empty message ⚠️")
+        return redirect(url_for('auth_login_view.profile'))
+
+    #* send mail to property owner.
+    subject = 'Nyupal Message Alert'
+    recipients=[NYUPAL_SUPPORT_EMAIL]
+    # recipients = contact_email
+    #! forbidden for now. We'll use default email (registered to sendgrid)
+    # sender=f'{current_user.user_email}'
+    # print(f"sender: {sender}")
+    body = f'''
+                <p>You've Received Feedback from a User:</p>
+                <br>
+                {client_feedback}
+
+                <p>Nyupal 2022</p>
+            '''
+
+    send_mail(recipients, subject,body)
+    if send_mail:
+        print("email sent ✔️")
+        flash("Your Message has been sent ✔️")
+    else:
+        print("email failed ⚠️")
+        flash("Your Message has not been sent ❎")
+
+    return redirect(url_for('auth_login_view.profile'))
 
 
 def send_reset_email(user):

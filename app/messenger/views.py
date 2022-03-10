@@ -1,10 +1,14 @@
 
+#! [DEPRECATED] 10-03-2022
+
 #! Not sure why this view exists in the first place! Should it be for RMIS?
+#? Allows sending messages from the moreinfopage contact section.
+#* Why not handle mails from the send_mail_sms function thru moreinfopage route?
 from flask import Blueprint, render_template, url_for, request, flash, redirect
 from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from ..send_mail_sms import send_mail
+from app.send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app.models import User, Property, Plans
 from app import db, mail, create_app
@@ -28,7 +32,7 @@ def send_email(owner,message):
                 <br>
                 {message}
 
-                <p>Nyupal 2021</p>
+                <p>Nyupal 2022</p>
             '''
 
     send_mail(recipients, subject,body,sender)

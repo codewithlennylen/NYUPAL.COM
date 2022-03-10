@@ -3,7 +3,7 @@ from flask_login.utils import login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
-from ..send_mail_sms import send_mail
+from app.send_mail_sms import send_mail
 from werkzeug.utils import secure_filename
 from app.models import Plans, User, Property, PropertyDocuments
 from app.subscription_manager import subscription_manager

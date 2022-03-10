@@ -2,7 +2,7 @@
 # https://github.com/sendgrid/sendgrid-python
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from ..config import SENDGRID_API_KEY, SENDGRID_DEFAULT_EMAIL
+from app.config import SENDGRID_API_KEY, SENDGRID_DEFAULT_EMAIL
 
 
 def send_mail(recipients: list, subject: str, body_text: str, sender: str = SENDGRID_DEFAULT_EMAIL):
@@ -16,6 +16,9 @@ def send_mail(recipients: list, subject: str, body_text: str, sender: str = SEND
     Returns:
         bool: Email status. True = success
     """
+    #! custom sender forbidden for now. We'll use default email (registered to sendgrid)
+        
+    recipients = recipients[0] if len(recipients) == 1 else recipients
     message = Mail(
         from_email=sender,  # works with sendgrid registered email address
         to_emails=recipients,
@@ -30,6 +33,10 @@ def send_mail(recipients: list, subject: str, body_text: str, sender: str = SEND
         print(f"Email response.status_code: {response.status_code}")
         print(f"Email response.body: {response.body}")
         print(f"Email response.headers: {response.headers}")
+
+        #? Hard-coded error code. Bad Idea but will work for now. [FAILED]
+        # if response.status_code == 403:
+        #     return False
 
         return True
 

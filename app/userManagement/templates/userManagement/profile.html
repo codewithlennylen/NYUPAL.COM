@@ -407,9 +407,10 @@
               aria-labelledby="Email-tab"
             >
             <form
-            action="{{ url_for('messenger_view.send_nyupal_message') }}"
+            action="{{ url_for('auth_login_view.feedback') }}"
             method="POST"
           >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
                 >Recipient:</label
@@ -418,7 +419,7 @@
                 type="text"
                 class="form-control"
                 id="recipient-name"
-                value="{{ owner['businessEmail']}}"
+                value="support@nyupal.com"
               />
             </div>
             <div class="mb-3">
@@ -427,7 +428,7 @@
                 class="form-control"
                 id="message-text"
                 rows="4"
-                name="msgText"
+                name="feedbackText"
               ></textarea>
             </div>
             <div class="modal-footer">

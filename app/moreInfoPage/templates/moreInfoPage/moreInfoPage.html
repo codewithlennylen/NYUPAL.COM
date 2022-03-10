@@ -268,9 +268,10 @@
               aria-labelledby="Email-tab"
             >
             <form
-            action="{{ url_for('messenger_view.send_message', propertyId=property.id) }}"
+            action="{{ url_for('more_info_view.more_info', property_id=property.id) }}"
             method="POST"
           >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
                 >Recipient:</label
@@ -279,7 +280,9 @@
                 type="text"
                 class="form-control"
                 id="recipient-name"
+                name="recipient_mail"
                 value="{{ owner.user_email}}"
+                disabled
               />
             </div>
             <div class="mb-3">

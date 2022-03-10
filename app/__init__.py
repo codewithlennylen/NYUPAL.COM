@@ -57,7 +57,7 @@ def create_app():
     from .moreInfoPage.views import more_info_view
     from .business.views import business_admin_view
     from .finance.views import finance_view
-    from .messenger.views import messenger_view
+    # from .messenger.views import messenger_view
 
     # app.register_blueprint(main_view, url_prefix="/index/")
     app.register_blueprint(main_view)
@@ -65,7 +65,7 @@ def create_app():
     app.register_blueprint(more_info_view, url_prefix="/more_info/")
     app.register_blueprint(business_admin_view, url_prefix="/property_page/")
     app.register_blueprint(finance_view, url_prefix="/upgrade_account/")
-    app.register_blueprint(messenger_view, url_prefix="/messenger/")
+    # app.register_blueprint(messenger_view, url_prefix="/messenger/")
 
     # Make database accessible from app_context.
     from app import models
