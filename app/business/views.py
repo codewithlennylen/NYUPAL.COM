@@ -1,19 +1,19 @@
-from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
-from flask_login.utils import login_required, logout_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, login_required, current_user
-from flask_mail import Message
-from app.send_mail_sms import send_mail
-from werkzeug.utils import secure_filename
-from app.models import Plans, User, Property, PropertyDocuments
-from app.subscription_manager import subscription_manager
-from app import db, mail, create_app
-import time
 import os
+import time
 import secrets
 import cloudinary
-import cloudinary.uploader
 import cloudinary.api
+import cloudinary.uploader
+from app import db, mail, create_app, aws_client
+from app.send_mail_sms import send_mail
+# from app.config import VERIFICATION_PATH, AWS_S3_BUCKET, ALLOWED_IMAGE_EXTENSIONS
+from werkzeug.utils import secure_filename
+from app.subscription_manager import subscription_manager
+from flask_login.utils import login_required, logout_user
+from app.models import Plans, User, Property, PropertyDocuments
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required, current_user
+from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
 
 # Create Blueprint
 business_admin_view = Blueprint('business_admin_view',
@@ -31,6 +31,7 @@ def property_dashboard():
 
     # list of properties listed / owned by the user.
     propertys = current_user.property
+    print(f'propertys {propertys}')
 
     # business plan
     userPlan = Plans.query.filter_by(id=current_user.businessPlan).first()
@@ -47,10 +48,12 @@ def property_dashboard():
     property_verification_status = {}
     verification_prompt = 4
     for p in propertys:
+        print(f'p; {p}')
         # docs = PropertyDocuments.query.filter_by(property_id=p.id).first()
-        docs = p.documents()
+        docs = p.documents
+        print(f'docs; {docs}')
         if docs:
-            property_verification_status[p] = docs.verified
+            property_verification_status[p] = docs[0].verified
         else:
             #* verification_prompt is an arbitrary flag that'll be used to dynamically alter the UI
             property_verification_status[p] = verification_prompt
@@ -374,6 +377,7 @@ def docs_upload(plan):
     userProperty = current_user.property
 
     if request.method == 'POST':
+        print("POST Request Received")
         propertyEditForm = request.form
         selectedProperty = propertyEditForm["selectedProperty"].strip()
 
@@ -384,14 +388,15 @@ def docs_upload(plan):
             return redirect(url_for('business_admin_view.docs_upload',plan=plan))
 
         #! Should be uploaded to AWS S3 instead.
+        #? 
         if request.files != None:
-            cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
-                          api_secret=os.getenv('API_SECRET'))
+            # cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'),
+            #               api_secret=os.getenv('API_SECRET'))
             propertyDocTitleDeed = request.files['propertyDocTitleDeed']
             propertyDocNatId = request.files['propertyDocNatId']
             propertyDocTaxReceipt = request.files['propertyDocTaxReceipt']
 
-            print(f"empty file: {propertyDocTitleDeed} ==> {propertyDocTitleDeed.filename}")
+            print(f"??empty file: {propertyDocTitleDeed} ==> {propertyDocTitleDeed.filename}")
 
             expectedDocumentsList = [propertyDocTitleDeed, propertyDocNatId,
                                   propertyDocTaxReceipt]
@@ -416,11 +421,16 @@ def docs_upload(plan):
                         # Save the image
                         doc.save(os.path.join(
                             create_app().config["IMAGE_UPLOADS_PROPERTY"], property_documents))
-                        cloudinary_docFilename = os.path.join(create_app().config["IMAGE_UPLOADS_PROPERTY"],property_documents)
-                        # print(cloudinary_docFilename)
-                        upload_result = cloudinary.uploader.upload(cloudinary_docFilename)
-                        print(f"upload_result: {upload_result['secure_url']}")
-                        property_documents = upload_result['secure_url']
+                        resultant_docFilename = os.path.join(create_app().config["IMAGE_UPLOADS_PROPERTY"],property_documents).replace('\\','/')
+                        # print(resultant_docFilename)
+                        # upload_result = cloudinary.uploader.upload(resultant_docFilename)
+
+                        print(f'resultant_docFilename; {resultant_docFilename}')
+                        print(f'AWS_S3_BUCKET; {create_app().config["AWS_S3_BUCKET"]}')
+                        print(f'VERIFICATION_PATH (key); {create_app().config["VERIFICATION_PATH"]}'+property_documents)
+                        upload_result = aws_client.upload_file(resultant_docFilename, create_app().config['AWS_S3_BUCKET'], f'{create_app().config["VERIFICATION_PATH"]}'+property_documents)
+                        print(f"upload_result: {upload_result}")
+                        # property_documents = upload_result['secure_url']
 
                     else:
                         error_message = "Please upload a Document with accepted extension (png, jpeg, jpg or pdf)"
@@ -496,6 +506,7 @@ def allowed_image(filename):
     ext = filename.rsplit(".", 1)[1]
 
     # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
+    # if ext.upper() in create_app().config["ALLOWED_IMAGE_EXTENSIONS"]:
     if ext.upper() in create_app().config["ALLOWED_IMAGE_EXTENSIONS"]:
         return True
     else:

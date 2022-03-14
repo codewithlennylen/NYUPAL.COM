@@ -6,6 +6,8 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from app.config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+import boto3
 # from flask_talisman import Talisman
 
 # fix timestamp issue first.
@@ -15,6 +17,10 @@ migrate = Migrate()
 mail = Mail()
 csrf = CSRFProtect()
 admin = Admin()
+aws_client = boto3.client('s3', # Service we want to use.
+                      aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+
 # talisman = Talisman()
 
 # csp = {
@@ -45,10 +51,10 @@ def create_app():
     login_manager.login_view = 'auth_login_view.login'
     login_manager.init_app(app)
 
-    #* admin functionality
-    admin.init_app(app)
-    from app.models import User
-    admin.add_view(ModelView(User, db.session))
+    #! admin functionality
+    # admin.init_app(app)
+    # from app.models import User
+    # admin.add_view(ModelView(User, db.session, endpoint='users_'))
 
 
     # Import and register Blueprints

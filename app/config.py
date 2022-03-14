@@ -11,7 +11,7 @@ DEFAULT_IMAGE = "https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/d
 IMAGE_UPLOADS_USER = "./app/userManagement/static"
 IMAGE_UPLOADS_PROPERTY = "./app/static"
 ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF", "PDF"]
-MAX_CONTENT_LENGTH = 10 * 1024 * 1024 # Max-filesize set at 10MB. Otherwise throws HTTP 413 error
+MAX_CONTENT_LENGTH = 20 * 1024 * 1024 # Max-filesize set at 20MB. Otherwise throws HTTP 413 error
 
 DEBUG = True
 SQLALCHEMY_DATABASE_URI =  os.getenv("DATABASE_URI")
@@ -27,3 +27,8 @@ MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDGRID_DEFAULT_EMAIL = os.getenv("SENDGRID_DEFAULT_EMAIL")
 NYUPAL_SUPPORT_EMAIL = os.getenv("NYUPAL_SUPPORT_EMAIL")
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_S3_BUCKET = os.getenv("AWS_S3_BUCKET")
+VERIFICATION_PATH = os.getenv("VERIFICATION_PATH")
