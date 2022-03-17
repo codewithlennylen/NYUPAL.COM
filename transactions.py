@@ -2,8 +2,8 @@ from app.models import PaymentGateway
 from app import create_app, db
 
 
-transact_id = ['x79FqQ','w9Q0MA','pM6aAg',
-                'op8Axg','fXD9Rg','qS1Xuw']
+transact_id = ['iQMxja','otY7I','VMApB8',
+                'wydoLjf','wSA4NR','pDix9r']
 
 with create_app().app_context():
     for transact in transact_id:
