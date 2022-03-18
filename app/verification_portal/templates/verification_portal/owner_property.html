@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+  <header>
+    <div class="card my-4 border-dark">
+      <div class="card-header bg-white">
+        <div class="col d-flex justify-content-center">
+          <a href="#" class="btn btn-outline-primary"
+            >PROPERTY VERIFICATION MANAGEMENT</a
+          >
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <ol class="list-group list-group-numbered my-4">
+    {% for p in propertys %}
+      <li class="list-group-item"><a href="{{ url_for('verification_portal_view.verification_status',property_id=p.id) }}">{{ p.property_name }}</a></li>
+    {% endfor%}
+  </ol>
+
+
+</div>
+
+{% endblock content %}

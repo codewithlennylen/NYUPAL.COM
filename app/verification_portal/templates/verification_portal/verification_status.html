@@ -1,0 +1,127 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+
+  <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
+    <div class="col">
+      <div class="card h-100 bg-light">
+        <div
+          id="carouselExampleIndicators"
+          class="carousel carousel-dark slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-indicators">
+            {% for image in propertyImages %}
+            <button
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to="{{ loop.index0 }}"
+              class="{{ 'active' if loop.index0 == 0 else 'not-active' }}"
+              aria-current="true"
+              aria-label="Slide {{ loop.index }}"
+            ></button>
+            {% endfor %}
+          </div>
+          {# for img in property.images .split('|') #}
+          <div class="carousel-inner">
+            {% for image in propertyImages %}
+            <div
+              class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}"
+            >
+              <img src="{{ image }}" class="d-block w-100" alt="..." />
+            </div>
+            {% endfor %}
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="row">
+        <div class="col mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ property.property_name }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Property Description
+              </h6>
+              <p class="card-text">{{ property.property_description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    <div class="col">
+      <div class="card h-100">
+        <h5 class="card-header">More info on {{ property.property_name }}</h5>
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <ul>
+            <li><b>Type:</b> {{ property.property_type }}</li>
+            <li><b>Price Range:</b> {{ property.property_price }}</li>
+            <li><b>Location:</b> {{ property.property_location }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="col mb-4">
+      <div class="card h-100">
+        <h5 class="card-header">Verification Documents</h5>
+        <div class="card-body">
+          <ul>
+            <li><b>Title Deed:</b> -</li>
+            <li><b>National ID:</b> -</li>
+            <li><b>Tax Receipt:</b> -</li>
+            <li><b>Lease Agreement:</b> -</li>
+            <li><b>Good conduct:</b> -</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col mb-4">
+      <div class="card h-100">
+        <h5 class="card-header">Verification Status</h5>
+        <div class="card-body">
+          <form action="{{ url_for('verification_portal_view.verification_status', property_id = property.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            {% for status in verification_dict %}
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}" id="choice-{{ loop.index0 }}">
+                <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }} -</b> {{ verification_dict[loop.index0][2] }}</label>
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  
+  </div>
+</div>
+
+
+
+
+{% endblock content %}

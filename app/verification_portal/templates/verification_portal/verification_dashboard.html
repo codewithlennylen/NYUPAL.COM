@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid">
+  <header>
+    <div class="card my-4 border-dark">
+      <div class="card-header bg-white">
+        <div class="col d-flex justify-content-center">
+          <a href="#" class="btn btn-outline-primary"
+            >PROPERTY VERIFICATION MANAGEMENT</a
+          >
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for owner in owners %}
+    <div class="col">
+      <div class="card border-primary shadow ">
+        <div class="row g-0">
+          <div class="col-md-4 m-auto pl-2">
+            <img
+              src="{{ owner.user_pic }}"
+              class="card-img-top rounded-circle m-auto pl-2 img-thumbnail"
+              alt="{{ owner.first_name }}'s Image"
+            />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <a
+                href="{{ url_for('verification_portal_view.owner_property',owner_id=owner.id) }}"
+                class="btn btn-outline-success mb-2"
+                >View More</a
+              >
+              <p class="card-text">
+                <b>Full Name: </b>{{ owner.first_name }} {{
+                owner.last_name }}
+              </p>
+              <p class="card-text">
+                <b>Email: </b>{{ owner.user_email }}
+              </p>
+              <p class="card-text">
+                <b>Phone Number: </b>{{ owner.user_phone }}
+              </p>
+
+              <p class="card-text">
+                <b>Account Type: </b>{{ 'Standard User Account' if
+                owner.businessAccount == 0 else 'Business Account' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}
