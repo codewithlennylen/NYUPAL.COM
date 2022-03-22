@@ -1,19 +1,18 @@
-import os
-import time
-import secrets
-import cloudinary
+from sys import prefix
 import cloudinary.api
 import cloudinary.uploader
 from app import db, mail, create_app, aws_client
 from app.send_mail_sms import send_mail
 # from app.config import VERIFICATION_PATH, AWS_S3_BUCKET, ALLOWED_IMAGE_EXTENSIONS
 from werkzeug.utils import secure_filename
-from app.subscription_manager import subscription_manager
 from flask_login.utils import login_required, logout_user
 from app.models import Plans, User, Property, PropertyDocuments
+from app.config import  AWS_S3_BUCKET, VERIFICATION_PATH
+from app.subscription_manager import subscription_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
+
 
 # Create Blueprint
 verification_portal_view = Blueprint('verification_portal_view',
@@ -93,6 +92,36 @@ def verification_status(property_id):
     # Getting the image dirs
     propertyImages = property.property_images.split('|')
 
+    #* Verification documents s3 bucket
+    #? We should get the doc from DB then download from Bucket.
+    # verification_docs_bucket = aws_client.list_objects(Bucket=AWS_S3_BUCKET)['Contents']
+    # verification_docs = [key['Key'] for key in verification_docs_bucket]
+    # print(f"s3: {verification_docs}")
+
+    #* verification documents from DB
+    property_docs = property.documents
+    property_docs_logs = [(p.title_deed,p.national_id,p.tax_receipt) for p in property_docs]
+    print(f'Property Documents: {property_docs_logs}')
+    property_docs_dict = dict()
+    local_property_docs_dict = {}
+    for p in property_docs:
+        #! Sketchy
+        property_docs_dict['title_deed'] = p.title_deed.replace('/','-')
+        property_docs_dict['national_id'] = p.national_id.replace('/','-')
+        property_docs_dict['tax_receipt'] = p.tax_receipt.replace('/','-')
+        download_property_document(p.title_deed)
+        download_property_document(p.national_id)
+        download_property_document(p.tax_receipt)
+
+        local_property_docs_dict['title_deed'] = f'downloads/{p.title_deed.split("/")[-1]}'
+        local_property_docs_dict['national_id'] = f'downloads/{p.national_id.split("/")[-1]}'
+        local_property_docs_dict['tax_receipt'] = f'downloads/{p.tax_receipt.split("/")[-1]}'
+
+
+    print(f'DB: {property_docs_dict}')
+    print(f'Local: {local_property_docs_dict}')
+
+
     #? Verification Status and Text => DB.Json Column?
     verification_dict = {
         0:('btn-warning','verification pending','We are currently working on getting your property verified.'),
@@ -123,6 +152,18 @@ def verification_status(property_id):
                            property=property,
                            owner=owner,
                            propertyImages=propertyImages,
-                           verification_dict=verification_dict)
+                           verification_dict=verification_dict,
+                           local_property_docs_dict=local_property_docs_dict)
 
 
+
+def download_property_document(doc_name):
+    print('download_property_document')
+
+    #! Download requested file from AWS IF NOT EXISTS
+    requested_file = f'{VERIFICATION_PATH}{doc_name}'
+    file_save_location = f'app/verification_portal/templates/verification_portal/downloads/{doc_name.split("/")[-1]}'
+    print(f'requested_file: {requested_file}')
+    print(f'file_save_location: {file_save_location}')
+
+    # aws_client.download_file(AWS_S3_BUCKET, requested_file, file_save_location)
