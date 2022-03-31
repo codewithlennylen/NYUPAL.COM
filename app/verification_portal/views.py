@@ -31,8 +31,6 @@ def verification_dashboard():
     # business plan
     # userPlan = Plans.query.filter_by(id=current_user.businessPlan).first()
 
- 
-  
     # Get the images
     propertyImages = []
     for prop in propertys:
@@ -62,8 +60,6 @@ def owner_property(owner_id):
     bannerAd = url_for('static', filename='icons/banner.jpg')
 
     propertys = Property.query.filter_by(property_owner=owner_id).all()
-
-
 
     return render_template("verification_portal/owner_property.html",
                            bannerAd=bannerAd,
@@ -103,7 +99,7 @@ def verification_status(property_id):
 
     #* verification documents from DB
     property_docs = property.documents
-    is_verified = property_docs[0].verified
+    is_verified = property_docs[0].verified if property_docs else None
     print(f'is_verified: {is_verified}')
     property_docs_logs = [(p.title_deed,p.national_id,p.tax_receipt) for p in property_docs]
     print(f'Property Documents: {property_docs_logs}')
