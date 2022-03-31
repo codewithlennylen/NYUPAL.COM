@@ -110,6 +110,8 @@ def verification_status(property_id):
 
     #* verification documents from DB
     property_docs = property.documents
+    is_verified = property_docs[0].verified
+    print(f'is_verified: {is_verified}')
     property_docs_logs = [(p.title_deed,p.national_id,p.tax_receipt) for p in property_docs]
     print(f'Property Documents: {property_docs_logs}')
     property_docs_dict = dict()
@@ -149,21 +151,44 @@ def verification_status(property_id):
     if request.method == 'POST':
         propertyEditForm = request.form
         print(propertyEditForm)
-        # property.property_name = propertyEditForm["editPropertyName"]
+        pending = 1 if propertyEditForm.get("choice-0") else 0
+        verified = 1 if propertyEditForm.get("choice-1") else 0
+        failed = 1 if propertyEditForm.get("choice-2") else 0
+        flagged = 1 if propertyEditForm.get("choice-3") else 0
+        print(pending,
+              verified,
+              failed,
+              flagged)
         # # .strip() removes trailing spaces
 
+        verification_decision = 0
+        if pending:
+            verification_decision = 0
+        elif verified:
+            verification_decision = 1
+        elif failed:
+            verification_decision = 2
+        elif flagged:
+            verification_decision = 3
+        else:
+            verification_decision = 0
+            print("invalid entry")
+
+        print(f'verification_decision: {verification_decision}')
         # owner.first_name = propertyEditForm["editContactName"].split(" ")[0]
-        # #? EdgeCase: User has firstname only. e.g. Google? -> Far-fetched? Maybe. Possible? Yes.
-        # owner.last_name = propertyEditForm["editContactName"].split(" ")[-1] if propertyEditForm["editContactName"].split(" ")[-1] else ''
-        # owner.user_phone = propertyEditForm["editPhoneNumber"]
- 
+        # property.verified = verification_decision
+        # is_verified = verification_decision
+        property_docx = PropertyDocuments.query.filter_by(property_id=property.id).first()
+        property_docx.verified = verification_decision
+        # print(f"property.verified: {property.verified}")
         # # Save changes to Database
-        # db.session.commit()
+        db.session.commit()
 
         # redirect -> Refresh the page to reflect the changes
-        return redirect(url_for('verification_portal_view.view_property', property_id=property.id))
+        return redirect(url_for('verification_portal_view.verification_status', property_id=property.id))
 
     return render_template("verification_portal/verification_status.html",
+                           is_verified=is_verified,
                            property=property,
                            owner=owner,
                            propertyImages=propertyImages,

@@ -6,6 +6,7 @@ from flask_login import UserMixin
 
 #! More work needs to go into securing these routes.
 
+
 class User(db.Model, UserMixin):
     __tablename__ = 'user'  # Explicit is better than implicit.
 

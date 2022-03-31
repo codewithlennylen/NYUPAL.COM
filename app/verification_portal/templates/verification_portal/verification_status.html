@@ -114,12 +114,22 @@
             method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             {% for status in verification_dict %}
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}"
-                id="choice-{{ loop.index0 }}">
-              <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }}
-                  -</b> {{ verification_dict[loop.index0][2] }}</label>
-            </div>
+                {% if is_verified == loop.index0 %}
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}"
+                      id="choice-{{ loop.index0 }}" checked>
+                    <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }}
+                        -</b> {{ verification_dict[loop.index0][2] }}</label>
+                  </div>
+                {% else %}
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}"
+                      id="choice-{{ loop.index0 }}">
+                    <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }}
+                        -</b> {{ verification_dict[loop.index0][2] }}</label>
+                  </div>
+                {% endif %}
+            
             {% endfor %}
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
