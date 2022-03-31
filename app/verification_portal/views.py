@@ -1,3 +1,4 @@
+import os.path
 from sys import prefix
 import cloudinary.api
 import cloudinary.uploader
@@ -175,12 +176,8 @@ def verification_status(property_id):
             print("invalid entry")
 
         print(f'verification_decision: {verification_decision}')
-        # owner.first_name = propertyEditForm["editContactName"].split(" ")[0]
-        # property.verified = verification_decision
-        # is_verified = verification_decision
         property_docx = PropertyDocuments.query.filter_by(property_id=property.id).first()
         property_docx.verified = verification_decision
-        # print(f"property.verified: {property.verified}")
         # # Save changes to Database
         db.session.commit()
 
@@ -196,8 +193,6 @@ def verification_status(property_id):
                            local_property_docs_dict=local_property_docs_dict)
 
 
-
-#! Download requested file from AWS IF NOT EXISTS
 def download_property_document(doc_name):
     """Download files from AWS S3
 
@@ -211,10 +206,15 @@ def download_property_document(doc_name):
     print(f'\nrequested_file: {requested_file}')
     print(f'file_save_location: {file_save_location}')
 
-    # :type Bucket: str
-    # :param Bucket: The name of the bucket to download from.
-    # :type Key: str
-    # :param Key: The name of the key to download from.
-    # :type Filename: str
-    # :param Filename: The path to the file to download to.
-    aws_client.download_file(AWS_S3_BUCKET, requested_file, file_save_location)
+    #* First check if requested file is in dir, avoid redundant downloads.
+    file_check = os.path.exists(file_save_location)
+    if not file_check:
+        # :type Bucket: str
+        # :param Bucket: The name of the bucket to download from.
+        # :type Key: str
+        # :param Key: The name of the key to download from.
+        # :type Filename: str
+        # :param Filename: The path to the file to download to.
+        aws_client.download_file(AWS_S3_BUCKET, requested_file, file_save_location)
+    # else:
+    #     print("File exists")
