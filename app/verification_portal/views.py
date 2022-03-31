@@ -1,17 +1,9 @@
 import os.path
-from sys import prefix
-import cloudinary.api
-import cloudinary.uploader
-from app import db, mail, create_app, aws_client
-from app.send_mail_sms import send_mail
-# from app.config import VERIFICATION_PATH, AWS_S3_BUCKET, ALLOWED_IMAGE_EXTENSIONS
-from werkzeug.utils import secure_filename
-from flask_login.utils import login_required, logout_user
-from app.models import Plans, User, Property, PropertyDocuments
+from app import db, aws_client
+from app.models import User, Property, PropertyDocuments
 from app.config import  AWS_S3_BUCKET, VERIFICATION_PATH
 from app.subscription_manager import subscription_manager
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_required, current_user
 from flask import Blueprint, render_template, url_for, request, flash, redirect, Markup
 
 
