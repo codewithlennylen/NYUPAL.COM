@@ -5,48 +5,29 @@
   <div class="row row-cols-1 row-cols-md-2 gy-4 gx-3 mt-2">
     <div class="col">
       <div class="card h-100 bg-light">
-        <div
-          id="carouselExampleIndicators"
-          class="carousel carousel-dark slide"
-          data-bs-ride="carousel"
-        >
+        <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel">
           <div class="carousel-indicators">
             {% for image in propertyImages %}
-            <button
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide-to="{{ loop.index0 }}"
-              class="{{ 'active' if loop.index0 == 0 else 'not-active' }}"
-              aria-current="true"
-              aria-label="Slide {{ loop.index }}"
-            ></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ loop.index0 }}"
+              class="{{ 'active' if loop.index0 == 0 else 'not-active' }}" aria-current="true"
+              aria-label="Slide {{ loop.index }}"></button>
             {% endfor %}
           </div>
           {# for img in property.images .split('|') #}
           <div class="carousel-inner">
             {% for image in propertyImages %}
-            <div
-              class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}"
-            >
+            <div class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}">
               <img src="{{ image }}" class="d-block w-100" alt="..." />
             </div>
             {% endfor %}
           </div>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="prev"
-          >
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="next"
-          >
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
@@ -68,50 +49,77 @@
           </div>
         </div>
       </div>
-      
-    <div class="col">
-      <div class="card h-100">
-        <h5 class="card-header">More info on {{ property.property_name }}</h5>
-        <div class="card-body">
-          <h5 class="card-title">Details</h5>
-          <ul>
-            <li><b>Type:</b> {{ property.property_type }}</li>
-            <li><b>Price Range:</b> {{ property.property_price }}</li>
-            <li><b>Location:</b> {{ property.property_location }}</li>
-          </ul>
+
+      <div class="col">
+        <div class="card h-100">
+          <h5 class="card-header">More info on {{ property.property_name }}</h5>
+          <div class="card-body">
+            <h5 class="card-title">Details</h5>
+            <ul>
+              <li><b>Type:</b> {{ property.property_type }}</li>
+              <li><b>Price Range:</b> {{ property.property_price }}</li>
+              <li><b>Location:</b> {{ property.property_location }}</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
     <div class="col mb-4">
-      <div class="card h-100">
-        <h5 class="card-header">Verification Documents</h5>
+        <div class="card h-100 bg-light">
+          <h5 class="card-header">Verification Documents</h5>
         <div class="card-body">
-          <ul>
-            <li><b><a href="{{ local_property_docs_dict['title_deed'] }}"  >Title Deed</a></b></li>
-            <li><b><a href="{{ local_property_docs_dict['national_id'] }}"  >National ID</a></b></li>
-            <li><b><a href="{{ local_property_docs_dict['tax_receipt'] }}"  >Tax Receipt</a></b></li>
-            <li><b><a href="{{ local_property_docs_dict['title_deed'] }}"  >Lease </a></b></li>
-            <li><b><a href="{{ local_property_docs_dict['title_deed'] }}" >Good conduct</a></b></li>
-            <li><b><a href="{{ local_property_docs_dict['title_deed'] }}"  >Certificate of Incorporation</a></b></li>
-            
-          </ul>
+          <div id="carouselDocuments" class="carousel carousel-dark slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              {% for document in local_property_docs_dict %}
+              <button type="button" data-bs-target="#carouselDocuments" data-bs-slide-to="{{ loop.index0 }}"
+                class="{{ 'active' if loop.index0 == 0 else 'not-active' }}" aria-current="true"
+                aria-label="Slide {{ loop.index }}"></button>
+              {% endfor %}
+            </div>
+
+            <div class="carousel-inner">
+              {% for document in local_property_docs_dict %}
+              <div class="{{ 'carousel-item active' if loop.index0 == 0 else 'carousel-item' }}">
+                <iframe
+                    src="{{ url_for('verification_portal_view.static', filename='verification_portal/'+local_property_docs_dict[document]) }}"
+                    frameBorder="0"
+                    scrolling="auto"
+                    height="300"
+                    width="100%"
+                ></iframe>
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDocuments"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDocuments"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
         </div>
-      </div>
+    </div>
     </div>
 
     <div class="col mb-4">
       <div class="card h-100">
         <h5 class="card-header">Verification Status</h5>
         <div class="card-body">
-          <form action="{{ url_for('verification_portal_view.verification_status', property_id = property.id) }}" method="POST">
+          <form action="{{ url_for('verification_portal_view.verification_status', property_id = property.id) }}"
+            method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             {% for status in verification_dict %}
-              <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}" id="choice-{{ loop.index0 }}">
-                <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }} -</b> {{ verification_dict[loop.index0][2] }}</label>
-              </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" name="choice-{{ loop.index0 }}"
+                id="choice-{{ loop.index0 }}">
+              <label class="form-check-label" for="choice-{{ loop.index0 }}"><b>{{ verification_dict[loop.index0][1] }}
+                  -</b> {{ verification_dict[loop.index0][2] }}</label>
+            </div>
             {% endfor %}
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -119,7 +127,7 @@
       </div>
     </div>
 
-  
+
   </div>
 </div>
 

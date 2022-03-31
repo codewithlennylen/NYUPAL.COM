@@ -81,6 +81,16 @@ def owner_property(owner_id):
 @verification_portal_view.route('/view/<property_id>', methods=['GET', 'POST'])
 @login_required
 def verification_status(property_id):
+    """This controls the page that enables admins to update a property's verification
+    status; view property documents and approve verification.
+
+
+    Args:
+        property_id (int): property's unique ID
+
+    Returns:
+        render_template: frontend
+    """
     # Check if user is admin!
     if current_user.businessAccount != 1:
         return redirect(url_for('main_view.index',page_num=1))
@@ -104,22 +114,27 @@ def verification_status(property_id):
     print(f'Property Documents: {property_docs_logs}')
     property_docs_dict = dict()
     local_property_docs_dict = {}
+    #! Sketchy
     for p in property_docs:
-        #! Sketchy
+        # 'rename' so as to avoid wrong redirect at the frontend
         property_docs_dict['title_deed'] = p.title_deed.replace('/','-')
         property_docs_dict['national_id'] = p.national_id.replace('/','-')
         property_docs_dict['tax_receipt'] = p.tax_receipt.replace('/','-')
+
+        # download original filename
         download_property_document(p.title_deed)
         download_property_document(p.national_id)
         download_property_document(p.tax_receipt)
 
+        # path to downloaded documents
+        #* ephemeral filesystem advantage
         local_property_docs_dict['title_deed'] = f'downloads/{p.title_deed.split("/")[-1]}'
         local_property_docs_dict['national_id'] = f'downloads/{p.national_id.split("/")[-1]}'
         local_property_docs_dict['tax_receipt'] = f'downloads/{p.tax_receipt.split("/")[-1]}'
 
 
-    print(f'DB: {property_docs_dict}')
-    print(f'Local: {local_property_docs_dict}')
+    # print(f'DB: {property_docs_dict}')
+    # print(f'Local: {local_property_docs_dict}')
 
 
     #? Verification Status and Text => DB.Json Column?
@@ -130,8 +145,8 @@ def verification_status(property_id):
         3:('btn-danger','verification flagged','Your property does not meet requirements for verification. Contact us for more info.'),
     }
 
+    #  Edit Property Verification Status
     if request.method == 'POST':
-        # Edit Property Info
         propertyEditForm = request.form
         print(propertyEditForm)
         # property.property_name = propertyEditForm["editPropertyName"]
@@ -157,13 +172,24 @@ def verification_status(property_id):
 
 
 
+#! Download requested file from AWS IF NOT EXISTS
 def download_property_document(doc_name):
-    print('download_property_document')
+    """Download files from AWS S3
 
-    #! Download requested file from AWS IF NOT EXISTS
+    Args:
+        doc_name (str): name of the document to download
+    """
+
     requested_file = f'{VERIFICATION_PATH}{doc_name}'
-    file_save_location = f'app/verification_portal/templates/verification_portal/downloads/{doc_name.split("/")[-1]}'
-    print(f'requested_file: {requested_file}')
+    # static files must be saved in the static sub-folder.
+    file_save_location = f'app/verification_portal/static/verification_portal/downloads/{doc_name.split("/")[-1]}'
+    print(f'\nrequested_file: {requested_file}')
     print(f'file_save_location: {file_save_location}')
 
-    # aws_client.download_file(AWS_S3_BUCKET, requested_file, file_save_location)
+    # :type Bucket: str
+    # :param Bucket: The name of the bucket to download from.
+    # :type Key: str
+    # :param Key: The name of the key to download from.
+    # :type Filename: str
+    # :param Filename: The path to the file to download to.
+    aws_client.download_file(AWS_S3_BUCKET, requested_file, file_save_location)
