@@ -18,7 +18,13 @@ def more_info(property_id):
     #! property_id should be randomCharacters -> Tom Scott
     property = Property.query.filter_by(id=int(property_id)).first()
     owner = User.query.filter_by(id=property.property_owner).first()
-    print(owner)
+    # print(owner)
+    property_verified = {}
+    if property.documents:
+            #! is this check justified?
+            if owner:
+                property_verified[property.id] = 1 if property.documents[0].verified == 1 else 0
+
 
     if request.method == 'POST':
         contact_form = request.form
@@ -79,7 +85,8 @@ def more_info(property_id):
                            owner=owner,
                            similarProperty=similarProperty,
                            propertyImages=propertyImages,
-                           similarPropertyImages=similarPropertyImages,)
+                           similarPropertyImages=similarPropertyImages,
+                           property_verified=property_verified,)
 
 
 # @more_info_view.route('/profile/', methods=['GET','POST'])

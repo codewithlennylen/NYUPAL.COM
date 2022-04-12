@@ -67,7 +67,18 @@
         <div class="col mb-3">
           <div class="card">
             <div class="card-body">
+              {% if property_verified[property.id] %}
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="card-title">{{ property.property_name }}</h5>
+                <!-- <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+                  Tooltip on top
+                </button> -->
+                <i class="fas fa-check-circle text-primary ml-auto"></i>
+              </div>
+            {% else %}
               <h5 class="card-title">{{ property.property_name }}</h5>
+            {% endif %}
+        
               <h6 class="card-subtitle mb-2 text-muted">
                 Property Description
               </h6>
@@ -161,7 +172,17 @@
           alt="..."
         />
         <div class="card-body">
+          {% if property_verified[property.id] %}
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h4 class="card-title">{{ property.property_name }}</h4>
+            <!-- <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+              Tooltip on top
+            </button> -->
+            <i class="fas fa-check-circle text-primary ml-auto"></i>
+          </div>
+        {% else %}
           <h4 class="card-title">{{ property.property_name }}</h4>
+        {% endif %}
           <p class="card-text"><b>Type:</b> {{ property.property_type }}</p>
           <p class="card-text">
             <b>Price Range:</b> {{ property.property_price }}
