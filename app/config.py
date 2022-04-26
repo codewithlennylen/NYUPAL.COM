@@ -7,7 +7,7 @@ load_dotenv(os.path.join(basedir, '.env')) # When running the application.
 
 # Image Dirs
 #? models.py default image is hardcoded
-DEFAULT_IMAGE = "https://res.cloudinary.com/higlubjfg/image/upload/v1640538015/default_pp4iup.png"
+DEFAULT_IMAGE = "https://res.cloudinary.com/higlubjfg/image/upload/v1649926381/nicon_zwzhjf.png"
 IMAGE_UPLOADS_USER = "./app/userManagement/static"
 IMAGE_UPLOADS_PROPERTY = "./app/static"
 ALLOWED_IMAGE_EXTENSIONS = ["JPEG", "JPG", "PNG", "GIF", "PDF"]
